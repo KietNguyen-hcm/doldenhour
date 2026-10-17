@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Golden Hour - Kỹ năng cấp cứu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&display=swap">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --ink:#2a1440; --dim:#4a2a5a; --panel:#fff6dc; --edge:#3a2a62; --red:#e63946;
+  --gold:#ffc23a; --gold-ink:#2a1440; --bg:#9dcdf7; --foot:#fff4d6; --tog:#d9661a;
+  --vig:rgba(40,30,80,.28); --scan:rgba(0,0,0,.03); --glow:rgba(255,190,80,.2); --tsh:#fff6dc;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--ink:#fff4d6;--dim:#f2b98a;--panel:#171c3e;--edge:#05071a;--gold:#ffcf4a;--gold-ink:#1b1230;
+    --bg:#0b1228;--foot:#f2b98a;--tog:#ffcf4a;--vig:rgba(5,7,26,.6);--scan:rgba(0,0,0,.08);--glow:rgba(255,190,80,.4);--tsh:#05071a;color-scheme:dark}
+}
+:root[data-theme="dark"]{--ink:#fff4d6;--dim:#f2b98a;--panel:#171c3e;--edge:#05071a;--gold:#ffcf4a;--gold-ink:#1b1230;
+  --bg:#0b1228;--foot:#f2b98a;--tog:#ffcf4a;--vig:rgba(5,7,26,.6);--scan:rgba(0,0,0,.08);--glow:rgba(255,190,80,.4);--tsh:#05071a;color-scheme:dark}
+html,body{height:100%;margin:0;background:var(--bg);overflow:hidden}
+body{font-family:'VT323','Courier New',monospace;color:var(--ink);font-size:20px}
+#c{position:fixed;inset:0;width:100%;height:100%;image-rendering:pixelated;display:block}
+.fx{position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 45%,transparent 50%,var(--vig) 100%),
+  repeating-linear-gradient(to bottom,var(--scan) 0 2px,transparent 2px 4px)}
+.ui{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(6px,1.8vh,14px);padding:env(safe-area-inset-top,0px) 16px calc(env(safe-area-inset-bottom,0px) + 40px)}
+.title{width:min(82vw,470px,50vh);height:auto;overflow:visible;filter:drop-shadow(0 0 26px var(--glow))}
+.title .l{animation:bob 2.4s steps(1) infinite;animation-delay:calc(var(--i)*.16s)}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-1px)}}
+.spark{animation:tw 1.6s steps(1) infinite}
+@keyframes tw{0%,100%{opacity:0}40%,70%{opacity:1}}
+.tag{margin:0;font-size:clamp(18px,3.4vw,24px);color:var(--dim);text-shadow:1px 1px 0 var(--tsh),2px 2px 0 var(--tsh);text-align:center;line-height:1}
+.ecg{width:190px;height:24px;overflow:visible}
+.ecg path{fill:none;stroke-width:1.2}
+.ecg .bg{stroke:#e63946;opacity:.3}
+.ecg .fg{stroke:#ff6b78;stroke-dasharray:26 74;animation:run 2s steps(25) infinite}
+@keyframes run{from{stroke-dashoffset:100}to{stroke-dashoffset:0}}
+.stack{display:grid;margin-top:8px}
+.menu{grid-area:1/1;display:flex;flex-direction:column;gap:16px;width:min(320px,80vw);justify-self:center}
+.menu.off{visibility:hidden}
+.btn{font:inherit;font-size:26px;line-height:1;color:var(--ink);background:var(--panel);border:0;border-radius:0;
+  padding:12px 12px 10px 38px;text-align:left;cursor:pointer;position:relative;outline:none;
+  box-shadow:0 -4px 0 0 var(--edge),0 4px 0 0 var(--edge),-4px 0 0 0 var(--edge),4px 0 0 0 var(--edge),0 8px 0 0 rgba(0,0,0,.35)}
+.btn.pri{background:var(--red);color:#fff}
+.btn::before{content:">";position:absolute;left:14px;top:50%;transform:translateY(-52%);opacity:0}
+.btn:hover,.btn:focus{background:var(--gold);color:var(--gold-ink)}
+.btn:hover::before,.btn:focus::before{opacity:1;animation:nudge .6s steps(2) infinite}
+@keyframes nudge{50%{left:18px}}
+.btn:active{transform:translateY(4px);box-shadow:0 -4px 0 0 var(--edge),0 4px 0 0 var(--edge),-4px 0 0 0 var(--edge),4px 0 0 0 var(--edge)}
+.lvl{display:flex;align-items:center;gap:12px;padding-top:9px;padding-bottom:7px}
+.lvl svg{width:28px;height:28px;flex:none}
+.lvl b{display:block;font-weight:400;font-size:26px;line-height:.9}
+.lvl i{display:block;font-style:normal;font-size:17px;line-height:1.05;color:var(--dim)}
+.lvl:hover i,.lvl:focus i{color:var(--gold-ink)}
+.tog{position:fixed;z-index:5;right:calc(env(safe-area-inset-right,0px) + 18px);top:calc(env(safe-area-inset-top,0px) + 18px);
+  width:44px;height:44px;padding:8px;background:var(--panel);border:0;border-radius:0;cursor:pointer;color:var(--tog);outline:none;
+  box-shadow:0 -4px 0 0 var(--edge),0 4px 0 0 var(--edge),-4px 0 0 0 var(--edge),4px 0 0 0 var(--edge)}
+.tog svg{display:block;width:100%;height:100%}
+.tog:hover,.tog:focus{background:var(--gold);color:var(--gold-ink)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 40px);transform:translateX(-50%);font-size:22px;
+  background:var(--edge);color:#ffcf4a;padding:8px 14px;box-shadow:0 0 0 3px #ffcf4a;opacity:0;white-space:nowrap}
+.toast.on{opacity:1}
+.foot{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 8px);display:flex;justify-content:space-between;
+  gap:10px;padding:0 14px;font-size:16px;line-height:1.1;color:var(--foot);text-shadow:1px 1px 0 #05071a}
+[hidden]{display:none !important}
+.playing .tog{display:none}
+.game{position:fixed;inset:0;z-index:4;background:#120a14;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
+#gc{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;display:block}
+.game::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(18,10,20,.7) 100%)}
+.hud{position:absolute;z-index:2;top:calc(env(safe-area-inset-top,0px) + 14px);left:14px;right:14px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.hud .btn{padding:8px 14px;font-size:20px;flex:none}
+.hud .btn::before{display:none}
+.obj{background:rgba(18,10,20,.85);color:#ffd24a;padding:6px 10px;font-size:20px;line-height:1;box-shadow:0 0 0 3px #ffd24a}
+.dlg{position:absolute;z-index:3;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);width:min(720px,94vw);box-sizing:border-box;background:#1b1230;color:#fff4d6;padding:18px 18px 14px;box-shadow:0 0 0 4px #ffd24a,0 0 0 8px #120a14;min-height:84px;font-size:26px;line-height:1.1;cursor:pointer}
+.dlg.narr{color:#f2b98a}
+.who{position:absolute;top:-24px;left:14px;background:#ffd24a;color:#1b1230;padding:2px 10px;font-size:22px;line-height:1.1}
+.dlg p{margin:0}
+.nx{position:absolute;right:14px;bottom:10px;width:0;height:0;border:8px solid transparent;border-top-color:#ffd24a;border-bottom:0;opacity:0}
+.dlg.done .nx{opacity:1;animation:bl 1s steps(1) infinite}
+@keyframes bl{50%{opacity:0}}
+.prompt{position:absolute;z-index:3;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 100px);background:#1b1230;color:#ffd24a;padding:8px 14px;font-size:24px;box-shadow:0 0 0 3px #ffd24a;white-space:nowrap}
+.pad{display:none;position:absolute;z-index:3;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);justify-content:space-between;align-items:flex-end;pointer-events:none}
+.pad div{display:flex;gap:10px}
+.pad button{pointer-events:auto;width:52px;height:52px;font:inherit;font-size:26px;border:0;background:var(--panel);color:var(--ink);box-shadow:0 -4px 0 0 var(--edge),0 4px 0 0 var(--edge),-4px 0 0 0 var(--edge),4px 0 0 0 var(--edge)}
+@media (pointer:coarse){.pad{display:flex}}
+.end{position:absolute;z-index:5;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(18,10,20,.78)}
+.end .card{background:#1b1230;color:#fff4d6;padding:22px;box-shadow:0 0 0 4px #ffd24a;max-width:min(440px,88vw);text-align:center}
+.end h2{font-weight:400;font-size:34px;color:#ffd24a;margin:0 0 8px}
+.end p{font-size:24px;margin:0 0 18px;line-height:1.1}
+.end .row{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
+.noti{position:absolute;z-index:6;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(18,10,20,.84)}
+.noti .card{background:#1b1230;color:#fff4d6;padding:0 0 18px;box-shadow:0 0 0 4px #e63946,0 0 0 8px #120a14;width:min(380px,90vw);text-align:center;animation:pop .3s steps(4)}
+@keyframes pop{from{transform:translateY(-30px)}to{transform:none}}
+.noti .al{background:#e63946;color:#fff;font-size:26px;padding:8px 10px;line-height:1}
+.noti canvas{display:block;margin:14px auto 8px;height:min(34vh,230px);width:auto;aspect-ratio:1;image-rendering:pixelated;box-shadow:0 0 0 3px #ffd24a}
+.noti p{margin:3px 14px;font-size:22px;line-height:1.05}
+.noti .btn{margin-top:14px;padding:10px 22px}
+.noti .btn::before{display:none}
+.choice{position:absolute;z-index:5;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);width:min(420px,92vw);box-sizing:border-box;display:flex;flex-direction:column;gap:14px;background:#1b1230;padding:16px 18px 14px;box-shadow:0 0 0 4px #ffd24a,0 0 0 8px #120a14}
+.choice .ct{color:#fff4d6;font-size:26px;line-height:1.05}
+.pbtn{position:absolute;z-index:3;right:calc(env(safe-area-inset-right,0px) + 14px);top:50%;transform:translateY(-50%);width:68px;padding:8px 4px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;font:inherit;font-size:16px;line-height:1;border:0;background:#1b1230;color:#fff4d6;cursor:pointer;box-shadow:0 0 0 3px #ffd24a}
+.pbtn svg{width:32px;height:32px}
+.pbtn:hover,.pbtn:focus{background:#ffd24a;color:#1b1230;outline:none}
+.phone{position:absolute;z-index:7;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(18,10,20,.8)}
+.pcl{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:14px;padding:8px 14px;font-size:20px}
+.pcl::before{display:none}
+.ph{position:relative;width:min(300px,84vw);height:min(600px,86vh);box-sizing:border-box;border-radius:38px;background:#0b0b10;padding:8px;box-shadow:0 0 0 3px #3a3a48,0 12px 0 0 rgba(0,0,0,.4);color:#fff}
+.wp{position:relative;width:100%;height:100%;border-radius:30px;overflow:hidden;background:linear-gradient(#2a2f66,#7a3f78 38%,#f0864f 76%,#ffd876)}
+.isl{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:84px;height:22px;border-radius:12px;background:#000;z-index:6}
+.stat{position:absolute;top:8px;left:20px;right:20px;display:flex;justify-content:space-between;font-size:18px;line-height:22px;z-index:5}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column}
+.lock{align-items:center;padding-top:48px;transition:transform .32s;touch-action:none;user-select:none}
+.lock.up{transform:translateY(-105%)}
+.ld{font-size:22px;margin-top:14px}
+.lt{font-size:92px;line-height:.85;margin-bottom:12px}
+.nt{width:calc(100% - 28px);box-sizing:border-box;background:rgba(20,10,30,.5);border-radius:14px;padding:8px 10px;font-size:18px;line-height:1.05}
+.nt b{font-weight:400;color:#ffd24a}
+.lkb{margin-top:auto;display:flex;justify-content:space-between;width:calc(100% - 44px)}
+.lkb i{width:44px;height:44px;border-radius:50%;background:rgba(20,10,30,.5)}
+.hint{font-size:18px;opacity:.9;margin-top:10px}
+.hb{width:100%;height:24px;border:0;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.hb::after{content:"";width:110px;height:5px;border-radius:3px;background:#fff}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px 8px;padding:56px 14px 0;text-align:center}
+.ap i,.dm{display:block;aspect-ratio:1;border-radius:14px}
+.ap i{width:100%;margin-bottom:3px}
+.ap span{font-size:14px;line-height:1}
+.dock{margin:auto 10px 14px;display:flex;justify-content:space-around;align-items:center;background:rgba(255,255,255,.28);border-radius:24px;padding:10px 6px}
+.dm{width:48px}
+.papp{width:48px;height:48px;border-radius:13px;border:0;background:#3ccf5a;padding:8px;cursor:pointer}
+.papp svg{width:100%;height:100%}
+.dial,.call{background:#14141c;padding-top:44px;align-items:center}
+.num{font-size:44px;min-height:46px;letter-spacing:2px;margin-top:8px}
+.pmsg{font-size:17px;color:#ffb3b3;min-height:38px;padding:0 14px;text-align:center;line-height:1}
+.keys{display:grid;grid-template-columns:repeat(3,64px);gap:12px;margin-top:4px}
+.keys button{width:64px;height:64px;border-radius:50%;border:0;background:#2c2c3a;color:#fff;font:inherit;font-size:34px;cursor:pointer}
+.keys button:active{background:#4a4a5e}
+.keys .cb{background:#3ccf5a;padding:16px}
+.keys .cb svg{width:100%;height:100%}
+.keys .db{font-size:20px;background:none}
+.dial .hb{margin-top:auto}
+.call{align-items:stretch}
+.ch{text-align:center;padding:4px 0 8px;border-bottom:1px solid #2c2c3a;font-size:26px;line-height:1}
+.ch #ct{font-size:18px;color:#6adf86;margin-top:2px;min-height:18px}
+.chat{flex:1;min-height:0;overflow:auto;padding:10px;display:flex;flex-direction:column;gap:8px}
+.m{max-width:86%;padding:7px 10px;border-radius:12px;font-size:19px;line-height:1.05}
+.m.d{background:#2c2c3a;align-self:flex-start}
+.m.me{background:#2f7cf6;align-self:flex-end}
+.opts{display:flex;flex-direction:column;gap:6px;padding:8px 10px 12px;border-top:1px solid #2c2c3a}
+.opt{font:inherit;font-size:18px;line-height:1.05;text-align:left;padding:8px 10px;border:0;border-radius:10px;background:#3a3a50;color:#fff;cursor:pointer}
+.opt:hover,.opt:focus{background:#ffd24a;color:#1b1230;outline:none}
+.opt:disabled{opacity:.4;pointer-events:none}
+.askb{display:flex;flex-direction:column;gap:12px}
+.askb .btn{font-size:22px;line-height:1.05;padding-top:10px;padding-bottom:8px}
+.sheet{position:fixed;z-index:9;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(18,10,20,.88);padding:env(safe-area-inset-top,0px) 12px env(safe-area-inset-bottom,0px)}
+.sc{width:min(640px,100%);max-height:94vh;display:flex;flex-direction:column;background:#1b1230;color:#fff4d6;box-shadow:0 0 0 4px #ffd24a,0 0 0 8px #120a14}
+.sc h2{margin:0;padding:12px 16px;background:#ffd24a;color:#1b1230;font-weight:400;font-size:30px;line-height:1}
+.sb{overflow:auto;padding:12px 16px;font-size:21px;line-height:1.05}
+.sb h3{font-weight:400;font-size:26px;color:#ffd24a;margin:14px 0 6px}
+.sb h3:first-child{margin-top:0}
+.res{background:#2a1a40;padding:8px 10px;margin-bottom:10px}
+.fast{display:grid;grid-template-columns:36px 1fr;gap:8px 10px;align-items:center}
+.fast b{display:block;width:36px;height:36px;line-height:36px;text-align:center;font-weight:400;font-size:28px;color:#1b1230}
+.sb ul{margin:0;padding-left:20px}
+.sb li{margin:3px 0}
+.sb .no{color:#ff9a9a}
+.sb .note{font-size:17px;color:#f2b98a;margin-top:12px}
+.sf{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;padding:12px 16px 14px;border-top:3px solid #3a2a62}
+.cpr{position:absolute;z-index:4;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 18px);width:min(360px,92vw);box-sizing:border-box;background:#1b1230;color:#fff4d6;padding:14px;text-align:center;box-shadow:0 0 0 4px #ffd24a,0 0 0 8px #120a14;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:24px;line-height:1}
+.cring{width:56px;height:56px;border-radius:50%;border:5px solid #ffd24a;background:rgba(255,210,74,.2)}
+.cpr .btn{padding:10px 36px;text-align:center}
+.cpr .btn::before{display:none}
+.sb b{font-weight:400;color:#ffd24a}
+.tabs{display:flex;background:#2a1a40}
+.tb{flex:1;font:inherit;font-size:24px;line-height:1;padding:12px 8px;border:0;background:none;color:#f2b98a;cursor:pointer}
+.tb.on{background:#1b1230;color:#ffd24a;box-shadow:inset 0 -4px 0 #ffd24a}
+.sum{background:#2a1a40;padding:10px 12px;margin-bottom:14px;border-left:6px solid #ffd24a;font-size:22px}
+.step{margin:0 0 14px}
+.step h3{margin:0 0 6px;display:flex;align-items:center}
+.step h3 i{flex:none;width:28px;height:28px;line-height:28px;text-align:center;background:#ffd24a;color:#1b1230;font-style:normal;font-size:22px;margin-right:10px}
+.do,.dont{padding:8px 10px 8px 12px;margin:8px 0}
+.do{background:#17382a;border-left:6px solid #3ccf5a}
+.dont{background:#3a1a22;border-left:6px solid #ff6b6b}
+.do>b,.dont>b{display:block;font-size:22px;margin-bottom:3px}
+.do>b{color:#8ce0a0}
+.dont>b{color:#ff9a9a}
+.mbar{position:relative;width:100%;height:22px;background:#2a1a40;box-shadow:0 0 0 3px #3a2a62}
+.mzone{position:absolute;top:0;bottom:0;left:38%;width:24%;background:#3ccf5a}
+.mmark{position:absolute;top:-4px;bottom:-4px;width:6px;left:0;background:#fff}
+.mfill{position:absolute;top:0;bottom:0;left:0;width:0;background:#ffd24a}
+.ov{position:fixed;z-index:10;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(18,10,20,.88);padding:env(safe-area-inset-top,0px) 12px env(safe-area-inset-bottom,0px)}
+.rk{width:min(560px,100%);max-height:92vh;display:flex;flex-direction:column;background:#1b1230;color:#fff4d6;box-shadow:0 0 0 4px #ffd24a,0 0 0 8px #120a14}
+.rk h2{margin:0;padding:12px 16px;background:#ffd24a;color:#1b1230;font-weight:400;font-size:30px;line-height:1}
+.rt{flex:1;font:inherit;font-size:22px;line-height:1;padding:11px 6px;border:0;background:none;color:#f2b98a;cursor:pointer}
+.rt.on{background:#1b1230;color:#ffd24a;box-shadow:inset 0 -4px 0 #ffd24a}
+.rlist{overflow:auto;padding:10px 14px;min-height:120px}
+.rrow{display:grid;grid-template-columns:34px 1fr auto;gap:8px;align-items:center;padding:6px 0;border-bottom:2px solid #2a1a40;font-size:22px;line-height:1}
+.rrow i{font-style:normal;color:#ffd24a;text-align:center}
+.rrow small{display:block;font-size:16px;color:#f2b98a;margin-top:2px}
+.rempty{padding:24px 10px;text-align:center;font-size:22px;color:#f2b98a}
+.rnote{padding:0 14px 8px;font-size:16px;color:#f2b98a}
+.sv{width:min(380px,100%);box-sizing:border-box;background:#1b1230;color:#fff4d6;padding:18px;text-align:center;box-shadow:0 0 0 4px #ffd24a,0 0 0 8px #120a14;display:flex;flex-direction:column;gap:12px;font-size:24px;line-height:1.05}
+.sv b{font-weight:400;font-size:38px;color:#ffd24a}
+.sv input{font:inherit;font-size:26px;padding:8px 10px;border:0;background:#2a1a40;color:#fff4d6;text-align:center;outline:3px solid #3a2a62}
+.sv input:focus{outline-color:#ffd24a}
+@property --vig{syntax:'<color>';inherits:true;initial-value:rgba(0,0,0,0)}
+@property --scan{syntax:'<color>';inherits:true;initial-value:rgba(0,0,0,0)}
+.swap,.swap *{transition:background-color .6s,color .6s,box-shadow .6s,text-shadow .6s,filter .6s !important}
+.swap .fx{transition:--vig .6s,--scan .6s !important}
+@media (max-width:600px){.foot span:nth-child(2){display:none}}
+@media (prefers-reduced-motion:reduce){.title .l,.spark,.btn::before,.ecg .fg{animation:none}.spark{opacity:1}.ecg .fg{stroke-dasharray:none}}
+</style>
+</head>
+<body>
+<canvas id="c" aria-hidden="true"></canvas>
+<div class="fx"></div>
+<button class="tog" id="tog" aria-label="Đổi giao diện sáng/tối"></button>
+
+<main class="ui">
+  <svg class="title" id="title" role="img" aria-label="Golden Hour" shape-rendering="crispEdges" viewBox="0 0 37 18"></svg>
+  <p class="tag">Giờ vàng cấp cứu: mỗi giây đều quan trọng</p>
+  <svg class="ecg" viewBox="0 0 100 12" preserveAspectRatio="none" aria-hidden="true">
+    <path class="bg" pathLength="100" d="M0 7H28L31 5L34 7H40L43 9L46 1L50 12L53 5L56 7H100"/>
+    <path class="fg" pathLength="100" d="M0 7H28L31 5L34 7H40L43 9L46 1L50 12L53 5L56 7H100"/>
+  </svg>
+  <div class="stack">
+    <nav class="menu" id="main" aria-label="Menu chính">
+      <button class="btn pri" id="start">Bắt đầu</button>
+      <button class="btn" id="book">Cẩm nang cấp cứu</button>
+      <button class="btn" id="rankBtn">Bảng xếp hạng</button>
+      <button class="btn" data-msg="Cài đặt sắp ra mắt">Cài đặt</button>
+    </nav>
+    <nav class="menu off" id="lv" aria-label="Chọn màn chơi"></nav>
+  </div>
+</main>
+<section class="sheet" id="sheet" hidden aria-label="Cẩm nang cấp cứu: Đột quỵ">
+  <div class="sc"><h2>Cẩm nang: Khi gặp đột quỵ</h2>
+    <div class="tabs"><button class="tb on" data-k="1">Đột quỵ</button><button class="tb" data-k="2">Đuối nước</button></div>
+    <div class="sb">
+      <div class="res" id="shRes" hidden></div>
+      <h3>1. Nhận biết nhanh: FAST</h3>
+      <div class="fast">
+        <b style="background:#ffd24a">F</b><div><strong>Face (Mặt):</strong> nhờ người bệnh cười. Một bên mặt bị xệ hoặc méo.</div>
+        <b style="background:#7fc8ff">A</b><div><strong>Arm (Tay):</strong> nhờ giơ hai tay lên. Một tay yếu hoặc rũ xuống.</div>
+        <b style="background:#ff9a9a">S</b><div><strong>Speech (Lời nói):</strong> nói ngọng, khó nói hoặc không hiểu lời.</div>
+        <b style="background:#8ce0a0">T</b><div><strong>Time (Thời gian):</strong> chỉ cần có một dấu hiệu, gọi 115 ngay.</div>
+      </div>
+      <h3>2. Gọi 115, nói gì?</h3>
+      <ul>
+        <li>Nêu rõ biểu hiện: méo mặt, yếu tay, nói ngọng, nghi đột quỵ.</li>
+        <li>Báo giờ bắt đầu triệu chứng. Nếu không biết chính xác, báo giờ lần cuối thấy người bệnh còn bình thường.</li>
+        <li>Địa chỉ đầy đủ: số nhà, tên đường, phường, dấu hiệu dễ nhận.</li>
+        <li>Cho biết người bệnh còn tỉnh và thở như thế nào. Giữ máy và làm theo hướng dẫn của tổng đài.</li>
+      </ul>
+      <h3>3. Trong lúc chờ xe</h3>
+      <ul>
+        <li>Giữ bình tĩnh, trấn an người bệnh, nới lỏng quần áo.</li>
+        <li>Cho ngồi tựa hoặc nằm thoải mái, đầu hơi cao. Nếu bất tỉnh hoặc nôn, cho nằm nghiêng và theo dõi hơi thở.</li>
+        <li>Chuẩn bị giấy tờ bệnh án, thẻ bảo hiểm, đơn thuốc đang dùng.</li>
+        <li>Cử người ra mở cổng, bật đèn để đón xe cứu thương.</li>
+        <li class="no">KHÔNG cho ăn, uống nước hay uống thuốc (dễ bị sặc).</li>
+        <li class="no">KHÔNG cạo gió, chích máu, bấm huyệt: mất thời gian quý giá.</li>
+        <li class="no">KHÔNG đợi xem có đỡ không rồi mới gọi. Dù triệu chứng tự hết vẫn phải đi viện.</li>
+      </ul>
+      <h3>4. Khi xe tới</h3>
+      <ul>
+        <li>Báo đúng giờ khởi phát cho nhân viên y tế.</li>
+        <li>Đưa giấy tờ, thuốc đang dùng và bệnh nền đã biết.</li>
+      </ul>
+      <div class="note">Cẩm nang mang tính giáo dục, không thay thế khóa huấn luyện sơ cứu chính thức. Khi nghi ngờ đột quỵ, hãy gọi 115 ngay.</div>
+    </div>
+    <div class="sf"><button class="btn" id="shA">Đóng</button><button class="btn" id="shB">Về menu</button></div>
+  </div>
+</section>
+<div class="ov" id="rank" hidden><div class="rk"><h2>Bảng xếp hạng</h2><div class="tabs"><button class="rt on" data-k="0">Tất cả</button><button class="rt" data-k="1">Đột quỵ</button><button class="rt" data-k="2">Đuối nước</button></div><div class="rlist" id="rlist"></div><div class="rnote">Điểm được lưu trên thiết bị này.</div><div class="sf"><button class="btn" id="rkX">Đóng</button></div></div></div>
+<div class="ov" id="save" hidden><div class="sv"><div>Bạn đạt</div><b id="svS">0</b><div>điểm. Nhập tên để lưu vào bảng xếp hạng:</div><input id="nm" maxlength="14" autocomplete="off" placeholder="Tên của bạn"><div class="sf" style="border:0;padding:0"><button class="btn" id="svOk">Lưu điểm</button><button class="btn" id="svNo">Bỏ qua</button></div></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<section class="game" id="game" hidden aria-label="Màn 1: Đột quỵ">
+  <canvas id="gc" width="320" height="180" aria-label="Phòng ăn tối của gia đình"></canvas>
+  <div class="hud"><button class="btn" id="quit">Thoát</button><div class="obj" id="obj"></div><div class="obj" id="inv"></div></div>
+  <div class="prompt" id="prompt" hidden>Nhấn E để ngồi vào bàn ăn</div>
+  <div class="dlg" id="dlg" hidden><div class="who" id="who"></div><p id="say"></p><span class="nx"></span></div>
+  <div class="pad"><div><button id="bl" aria-label="Đi trái">&lt;</button><button id="bu" aria-label="Đi lên">^</button><button id="bd" aria-label="Đi xuống">v</button><button id="br" aria-label="Đi phải">&gt;</button></div><button id="bact" aria-label="Tương tác">E</button></div>
+  <button class="pbtn" id="pbtn" hidden aria-label="Mở điện thoại"></button>
+  <div class="phone" id="phone" hidden>
+    <button class="btn pcl" id="pOff">Cất điện thoại</button>
+    <div class="ph"><div class="wp">
+      <div class="isl"></div><div class="stat"><span>18:42</span><span>5G 87%</span></div>
+      <div class="scr lock" id="sLock">
+        <div class="ld">Thứ Sáu, 16 tháng 10</div><div class="lt">18:42</div>
+        <div class="nt"><b>Nhóm Gia đình</b><br>Mẹ: Con về ăn cơm nhé, mẹ nấu canh chua.</div>
+        <div class="lkb"><i></i><i></i></div>
+        <div class="hint">Vuốt lên để mở</div><button class="hb" aria-label="Vuốt lên để mở"></button>
+      </div>
+      <div class="scr" id="sHome" hidden><div class="grid" id="grid"></div><div class="dock" id="dock"></div></div>
+      <div class="scr dial" id="sDial" hidden><div class="num" id="num"></div><div class="pmsg" id="pmsg"></div><div class="keys" id="keys"></div><button class="hb" id="hbD" aria-label="Về màn hình chính"></button></div>
+      <div class="scr call" id="sCall" hidden><div class="ch"><div id="cn">Đang gọi 115...</div><div id="ct"></div></div><div class="chat" id="chat"></div><div class="opts" id="opts"></div></div>
+    </div></div>
+  </div>
+  <div class="cpr" id="mini" hidden><div id="miT"></div><div class="mbar"><i class="mzone" id="miZ"></i><i class="mmark" id="miM"></i><i class="mfill" id="miF"></i></div><button class="btn" id="miB">NÉM</button></div>
+  <div class="cpr" id="cpr" hidden><div class="cring" id="cprRing"></div><div id="cprT"></div><div id="cprM">&nbsp;</div><button class="btn" id="cprB">ÉP</button></div>
+  <div class="choice" id="ask" hidden><div class="ct" id="askT"></div><div class="askb" id="askB"></div></div>
+  <div class="choice" id="choice" hidden><div class="ct">Mẹ có biểu hiện bất thường. Bạn sẽ làm gì?</div><button class="btn" id="cF">Kiểm tra FAST</button><button class="btn" id="cS">Bỏ qua biểu hiện</button></div>
+  <div class="noti" id="noti" hidden><div class="card"><div class="al">Mẹ có biểu hiện bất thường!</div><canvas id="nc" width="64" height="64" aria-label="Khuôn mặt mẹ bị méo một bên"></canvas><p>Miệng méo xệch sang một bên</p><p>Mắt một bên sụp xuống</p><p>Tay yếu, vừa làm rơi đũa</p><button class="btn" id="notiOk">Tiếp tục</button></div></div>
+  <div class="end" id="end" hidden><div class="card"><h2>Hết phần mở đầu</h2><p></p><div class="row"><button class="btn" id="again">Chơi lại</button><button class="btn" id="menu">Về menu</button></div></div></div>
+</section>
+<footer class="foot"><span>Game giáo dục, không thay thế khóa huấn luyện sơ cứu chính thức</span><span>Phím mũi tên + Enter, Esc để quay lại</span><span>v0.1</span></footer>
+
+<script>
+/* ---------- Pixel title ---------- */
+const G={
+G:["01110","10001","10000","10111","10001","10001","01110"],
+O:["01110","10001","10001","10001","10001","10001","01110"],
+L:["10000","10000","10000","10000","10000","10000","11111"],
+D:["11110","10001","10001","10001","10001","10001","11110"],
+E:["11111","10000","10000","11110","10000","10000","11111"],
+N:["10001","11001","10101","10101","10011","10001","10001"],
+H:["10001","10001","10001","11111","10001","10001","10001"],
+U:["10001","10001","10001","10001","10001","10001","01110"],
+R:["11110","10001","10001","11110","10100","10010","10001"]};
+const ROW=['#fff6c2','#ffe680','#ffd24a','#ffb52e','#f58f20','#d9661a','#b0461a'];
+(function(){
+  let out='',n=0;
+  const word=(w,ox,oy)=>{
+    const cells=[];
+    [...w].forEach((ch,li)=>G[ch].forEach((row,y)=>[...row].forEach((v,x)=>{if(v==='1')cells.push([ox+li*6+x,oy+y,y,li])})));
+    out+=`<g fill="#2a0d1c">${cells.map(c=>`<rect x="${c[0]+2}" y="${c[1]+2}" width="1" height="1"/>`).join('')}</g>`;
+    out+=`<g fill="#8a1f2f">${cells.map(c=>`<rect x="${c[0]+1}" y="${c[1]+1}" width="1" height="1"/>`).join('')}</g>`;
+    for(let li=0;li<w.length;li++)out+=`<g class="l" style="--i:${n++}">`+cells.filter(c=>c[3]===li).map(c=>`<rect x="${c[0]}" y="${c[1]}" width="1" height="1" fill="${ROW[c[2]]}"/>`).join('')+`</g>`;
+  };
+  word('GOLDEN',0,0);word('HOUR',6,9);
+  const sp=(x,y,d)=>`<g class="spark" style="animation-delay:${d}s" fill="#fff"><rect x="${x+1}" y="${y}" width="1" height="3"/><rect x="${x}" y="${y+1}" width="3" height="1"/></g>`;
+  out+=sp(33,-2,0)+sp(-1,12,.8)+sp(31,12,1.2);
+  document.getElementById('title').innerHTML=out;
+})();
+
+/* ---------- Pixel icons ---------- */
+const ic=(rows,f)=>`<svg viewBox="0 0 8 8" shape-rendering="crispEdges" aria-hidden="true">${rows.map((r,y)=>[...r].map((c,x)=>c==='.'?'':`<rect x="${x}" y="${y}" width="1" height="1" fill="${f(c)}"/>`).join('')).join('')}</svg>`;
+const PAL={X:'#ffd24a',R:'#e63946',W:'#fff4d6',B:'#7fc8ff'};
+const SUN=["...XX...",".X.XX.X.","..XXXX..","XXXXXXXX","XXXXXXXX","..XXXX..",".X.XX.X.","...XX..."];
+const MOON=["..XXXX..",".XXX....","XXX.....","XXX.....","XXX.....","XXX.....",".XXX....","..XXXX.."];
+const LV=[
+ {id:'stroke',n:'Đột quỵ',s:'Nhận biết FAST',r:["....XXX.","...XXX..","..XXX...",".XXXXXX.","...XXX..","..XX....",".XX.....","X......."]},
+ {id:'pool',n:'Đuối nước',s:'Cứu hộ an toàn',r:["..RRWW..",".RR..WW.","RR....WW","W......R","R......W","WW....RR",".WW..RR.","..WWRR.."]},
+ ];
+document.getElementById('lv').innerHTML=LV.map(l=>`<button class="btn lvl" ${l.id?`data-lv="${l.id}"`:''} data-msg="Đang tải: ${l.n}...">${ic(l.r,c=>PAL[c])}<div><b>${l.n}</b><i>${l.s}</i></div></button>`).join('')+`<button class="btn" data-back>Quay lại</button>`;
+
+/* ---------- Menu ---------- */
+const mainM=document.getElementById('main'),lvM=document.getElementById('lv'),toast=document.getElementById('toast');let tt;
+const vis=()=>[...document.querySelectorAll('.menu:not(.off) .btn')];
+function show(w){mainM.classList.toggle('off',w!=='main');lvM.classList.toggle('off',w!=='lv');vis()[0].focus({preventScroll:true})}
+document.querySelectorAll('.btn').forEach(b=>b.addEventListener('click',()=>{
+  if(b.id==='start')return show('lv');if(b.id==='book')return openSheet(false);if(b.id==='rankBtn')return openRank();if(b.dataset.lv==='stroke')return startLevel();if(b.dataset.lv==='pool')return startLevel2();
+  if('back' in b.dataset)return show('main');
+  toast.textContent=b.dataset.msg;toast.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('on'),1800);
+}));
+addEventListener('keydown',e=>{
+  if(window.GM||!$('sheet').hidden||!$('rank').hidden)return;const v=vis(),i=v.indexOf(document.activeElement);
+  if(['ArrowDown','s','S'].includes(e.key)){e.preventDefault();v[(i+1)%v.length].focus()}
+  else if(['ArrowUp','w','W'].includes(e.key)){e.preventDefault();v[(i<=0?v.length:i)-1].focus()}
+  else if(e.key==='Escape'&&!lvM.classList.contains('off'))show('main');
+});
+show('main');
+
+/* ---------- Theme ---------- */
+const root=document.documentElement,tog=document.getElementById('tog'),mq=matchMedia('(prefers-color-scheme: dark)');
+let DK=true,K=0,k=-1;
+function sync(){const t=root.dataset.theme;DK=t?t==='dark':mq.matches;K=DK?0:1;if(k<0)k=K;
+  tog.innerHTML=ic(DK?MOON:SUN,()=>'currentColor');
+  tog.setAttribute('aria-label',DK?'Chuyển sang giao diện sáng':'Chuyển sang giao diện tối');}
+try{const s=localStorage.getItem('gh-theme');if(s)root.dataset.theme=s}catch(e){}
+let st;tog.addEventListener('click',()=>{root.classList.add('swap');clearTimeout(st);st=setTimeout(()=>root.classList.remove('swap'),900);root.dataset.theme=DK?'light':'dark';try{localStorage.setItem('gh-theme',root.dataset.theme)}catch(e){}sync()});
+mq.addEventListener('change',sync);sync();
+
+/* ---------- Pixel city (night / day palettes) ---------- */
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+let W=0,H=200,B=[],HX=0,stars=[],clouds=[],peds=[];
+const mo=matchMedia('(prefers-reduced-motion: reduce)').matches?.2:1;
+const R=(x,y,w,h,c)=>{ctx.fillStyle=c;ctx.fillRect(Math.floor(x),Math.floor(y),w,h)};
+const disc=(cx,cy,r,c,a=1)=>{ctx.globalAlpha=a;for(let dy=-r;dy<=r;dy++){const hw=Math.floor(Math.sqrt(r*r-dy*dy));R(cx-hw,cy+dy,hw*2+1,1,c)}ctx.globalAlpha=1};
+const mk=s=>()=>(s=(s*16807)%2147483647)/2147483647;
+const PD={sky:['#0e1630','#16224a','#2a2f66','#523a76','#8a4a77','#c75f6a','#f0864f','#ffb347','#ffd876'],star:1,sun:['#ffc94d','#ffe07a','#fff0b0'],gl:'#ffcf6a',ga:.07,
+ cl:['#e07a80','#eb8c8a','#a04a6c'],ca:.55,far:'#3a2a62',rim:'#d9707a',near:'#1a1232',win:'#ffd36a',wa:[.55,1],hb:'#5a5290',hr:'#3f3870',hw:['#ffd36a','#7fc8ff'],
+ sd:'#352a55',rd:'#171027',ds:'#6a5a8a',pl:'#0d0a1c',lg:.14};
+const PL={sky:['#4f9fec','#6db3f2','#8fc6f6','#b4d8f7','#d9e4f2','#ffe9c0','#ffdca2','#ffd184','#ffc868'],star:0,sun:['#ffd45a','#ffe88a','#fff7c0'],gl:'#fff2a0',ga:.1,
+ cl:['#ffffff','#f4f8ff','#b8c8e4'],ca:.9,far:'#8d92c4',rim:'#ffffff',near:'#5c5f92',win:'#b6cdf5',wa:[.6,.9],hb:'#f0eef8',hr:'#c3bfdc',hw:['#8cc4f5','#b0dcff'],
+ sd:'#bdb5d6',rd:'#4a4466',ds:'#d8d0e8',pl:'#3a3358',lg:0};
+const hx=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));
+const lc=(a,b,k)=>{const x=hx(a),y=hx(b);return '#'+x.map((v,i)=>Math.round(v+(y[i]-v)*k).toString(16).padStart(2,'0')).join('')};
+const lv=(a,b,k)=>typeof a==='string'?lc(a,b,k):Array.isArray(a)?a.map((v,i)=>lv(v,b[i],k)):a+(b-a)*k;
+function pal(k){const o={};for(const n in PD)o[n]=lv(PD[n],PL[n],k);return o}
+function build(){
+  const a=innerWidth/innerHeight;H=a<.8?260:200;W=Math.ceil(H*a);cv.width=W;cv.height=H;ctx.imageSmoothingEnabled=false;
+  const rd=mk(11);HX=Math.floor(W*.74);B=[];
+  for(let L=0;L<2;L++){let x=-6;while(x<W){
+    const w=14+Math.floor(rd()*14),h=L?20+Math.floor(rd()*32):38+Math.floor(rd()*(H*.28));
+    if(!(L&&x+w>HX-4&&x<HX+38)){const win=[];for(let wy=4;wy<h-3;wy+=5)for(let wx=3;wx<w-3;wx+=4)win.push([wx,wy,rd()<.45]);B.push({x,w,h,L,win})}
+    x+=w+(L?2:1+Math.floor(rd()*3));}}
+  stars=Array.from({length:30},()=>({x:rd()*W,y:rd()*H*.25,p:rd()*6}));
+  const pc=['#e63946','#3a7bff','#2fbf8f','#f0a030','#b05ad0','#fff4d6'],sk=['#f4cfa4','#d9a27a','#a8704a'],hr=['#2a1a14','#6a3a1a','#c9a45a','#111'],pk=a=>a[Math.floor(rd()*a.length)];
+  peds=Array.from({length:8},()=>({x:rd()*(W+40),sp:(6+rd()*8)*(rd()<.5?-1:1),col:pk(pc),skin:pk(sk),hair:pk(hr),kid:rd()<.2,off:rd()*10,y:H-29+Math.floor(rd()*3)}));
+  clouds=Array.from({length:5},()=>({x:rd()*400,y:30+rd()*H*.18,w:18+rd()*22,s:2+rd()*3}));
+}
+build();addEventListener('resize',build);
+
+function car(x,y,d,col){
+  const r=(i,j,w,h,c)=>R(d>0?x+i:x+16-i-w,y+j,w,h,c);
+  r(3,0,9,3,col);r(4,1,3,2,'#a6d8ff');r(8,1,3,2,'#a6d8ff');r(0,3,16,4,col);
+  r(2,6,3,3,'#0d0a1c');r(11,6,3,3,'#0d0a1c');r(15,4,1,1,'#fff6c2');r(0,4,1,1,'#e63946');
+}
+function bus(x,y,d){
+  const r=(i,j,w,h,c)=>R(d>0?x+i:x+28-i-w,y+j,w,h,c);
+  r(0,0,28,7,'#f0a030');for(let i=2;i<24;i+=5)r(i,1,3,2,'#a6d8ff');r(24,1,3,3,'#a6d8ff');r(0,4,28,1,'#c0701a');
+  r(4,6,3,3,'#0d0a1c');r(20,6,3,3,'#0d0a1c');r(27,5,1,1,'#fff6c2');r(0,5,1,1,'#e63946');
+}
+function draw(t){
+  const P=pal(k*k*(3-2*k)),gy=H-30,bh=Math.ceil(gy/9);
+  for(let i=0;i<9;i++)R(0,i*bh,W,bh+1,P.sky[i]);
+  if(P.star>.02){ctx.globalAlpha=P.star;stars.forEach(s=>{if(Math.sin(t*1.5+s.p)>.2)R(s.x,s.y,1,1,'#fff3c4')});ctx.globalAlpha=1}
+  const cx=Math.floor(W*.3),cy=Math.floor(H*.52)+Math.round(Math.sin(t*.6));
+  for(let k=5;k>=1;k--)disc(cx,cy,26+k*8,P.gl,P.ga);
+  disc(cx,cy,26,P.sun[0]);disc(cx-2,cy-2,22,P.sun[1]);disc(cx-4,cy-4,16,P.sun[2]);
+  clouds.forEach(c=>{const x=((c.x-t*c.s)%(W+80)+W+80)%(W+80)-40;ctx.globalAlpha=P.ca;
+    R(x,c.y,c.w,3,P.cl[0]);R(x+3,c.y-2,c.w*.5,2,P.cl[1]);R(x+2,c.y+3,c.w-4,1,P.cl[2]);ctx.globalAlpha=1});
+  B.forEach(b=>{
+    const top=gy-b.h;
+    R(b.x,top,b.w,b.h,b.L?P.near:P.far);
+    if(!b.L)R(b.x,top,b.w,1,P.rim);
+    ctx.globalAlpha=P.wa[b.L?1:0];
+    b.win.forEach(w=>{if(w[2])R(b.x+w[0],top+w[1],2,2,P.win)});
+    ctx.globalAlpha=1;
+  });
+  // hospital (static cross sign)
+  const hh=Math.floor(H*.34),ht=gy-hh;
+  R(HX,ht,34,hh,P.hb);R(HX,ht,34,1,'#ffd36a');R(HX-2,ht-3,38,3,P.hr);
+  for(let wy=ht+22;wy<gy-12;wy+=7)for(let wx=HX+4;wx<HX+30;wx+=8)R(wx,wy,4,3,((wx+wy)%3)?P.hw[0]:P.hw[1]);
+  R(HX+10,ht+4,14,13,'#fff');R(HX+15,ht+6,4,9,'#e63946');R(HX+12,ht+8,10,5,'#e63946');
+  R(HX+14,gy-9,6,9,P.hw[0]);
+  // street
+  R(0,gy,W,4,P.sd);R(0,gy+4,W,H-gy-4,P.rd);
+  for(let x=4;x<W;x+=22)R(x,gy+19,10,1,P.ds);
+  for(let x=30;x<W;x+=78){R(x,gy-18,1,18,P.pl);R(x-2,gy-19,5,1,P.pl);if(P.lg>.01){disc(x,gy-17,9,'#ffd36a',P.lg);R(x-1,gy-18,3,1,'#fff0b0')}}
+  // pedestrians on the sidewalk
+  peds.forEach(p=>{const x=Math.floor(((p.x+t*p.sp)%(W+40)+W+40)%(W+40)-20),f=p.y,k2=p.kid?2:0,fr=Math.floor(t*Math.abs(p.sp)*.5+p.off)%2;
+    ctx.globalAlpha=.3;R(x,f,4,1,'#000');ctx.globalAlpha=1;
+    R(x+1,f-10+k2,2,1,p.hair);R(x+1,f-9+k2,2,2,p.skin);R(x,f-7+k2,4,p.kid?3:4,p.col);
+    R(x+(fr?0:1),f-3,1,3,'#2a2440');R(x+(fr?3:2),f-3,1,3,'#2a2440')});
+  // cars: right lane drives right, left lane drives left (equal speeds per lane, so no overlap)
+  const per=W+140,pos=(s,o,d)=>{const m=(t*s+o)%per;return Math.floor(d>0?m-50:W+90-m)};
+  car(pos(42,per*.5,1),gy+8,1,'#ffcf3a');
+  car(pos(34,0,-1),H-11,-1,'#3a7bff');
+  bus(pos(34,per/3,-1),H-11,-1);
+  car(pos(34,per*2/3,-1),H-11,-1,'#e8e8f0');
+  // ambulance (steady lights, no flashing)
+  const ax=Math.floor(((t*42)%(W+140))-50),ay=gy+6;
+  R(ax,ay,15,8,'#f4f4f4');R(ax+15,ay+2,7,6,'#f4f4f4');R(ax,ay+6,22,1,'#e63946');
+  R(ax+6,ay+1,2,5,'#e63946');R(ax+4,ay+3,6,2,'#e63946');
+  R(ax+17,ay+3,4,2,'#7fc8ff');R(ax+3,ay+8,4,3,'#0d0a1c');R(ax+16,ay+8,4,3,'#0d0a1c');
+  R(ax+8,ay-1,3,1,'#e63946');R(ax+11,ay-1,3,1,'#3a7bff');R(ax+22,ay+5,2,1,'#fff6c2');
+}
+let last=performance.now(),T=0;
+(function loop(n){const dt=Math.min(.05,(n-last)/1000);last=n;T+=dt*mo;k+=Math.sign(K-k)*Math.min(Math.abs(K-k),dt/.7);if(!window.GM)draw(T);requestAnimationFrame(loop)})(last);
+
+/* ===== Màn 1: Đột quỵ - Bữa cơm tối (phần mở đầu) ===== */
+var GM=null;
+const gm=document.getElementById('game'),gc=document.getElementById('gc'),$=id=>document.getElementById(id),
+  dlg=$('dlg'),who=$('who'),say=$('say'),obj=$('obj'),prm=$('prompt'),endEl=$('end');
+let g=gc.getContext('2d'),RB,TB,LID=0,l2=0;
+const R2=(x,y,w,h,c)=>{g.fillStyle=c;g.fillRect(Math.round(x),Math.round(y),w,h)};
+const gd=(cx,cy,r,c,a)=>{g.globalAlpha=a;for(let dy=-r;dy<=r;dy++){const hw=Math.floor(Math.sqrt(r*r-dy*dy));R2(cx-hw,cy+dy,hw*2+1,1,c)}g.globalAlpha=1};
+const SEAT=230;
+const CH=[
+ {id:'ong',x:126,t:'e',skin:'#e6b98e',hair:'#dcdce4',shirt:'#6a7a8a',gl:1},
+ {id:'ba',x:152,t:'e',skin:'#e8bd94',hair:'#d0d0d8',shirt:'#a05a7a',bun:1},
+ {id:'me',x:178,t:'a',skin:'#f0c49c',hair:'#1c1418',shirt:'#3a8a6a',long:1},
+ {id:'be',x:204,t:'k',skin:'#f4cfa4',hair:'#2a1a14',shirt:'#f0a030',pig:1}];
+const PLR={x:SEAT,t:'a',skin:'#f0c49c',hair:'#1a1218',shirt:'#3a9a9a'};
+const INTRO=[
+ {t:'18:40. Bạn đẩy cửa bước vào nhà sau một ngày dài. Mùi canh chua thơm lừng từ phòng ăn.'},
+ {w:'Mẹ',id:'me',t:'Con về rồi đấy à? Rửa tay rồi vào ăn cơm đi con, cả nhà chờ nãy giờ.'},
+ {w:'Bà',id:'ba',t:'Bà nấu canh chua cá lóc đấy, còn nóng hổi. Vào đây bà múc cho.'},
+ {w:'Bé Na',id:'be',t:'Ngồi cạnh em nè! Em để dành chỗ rồi đó.'},
+ {w:'Ông',id:'ong',t:'Lại đây ngồi với ông. Cả nhà đông đủ mới vui chứ.'}];
+const SIT=[{w:'Mẹ',id:'me',t:'Ăn đi con, kẻo canh nguội mất.'},{t:'Tiếng bát đũa, tiếng cười nói rộn ràng. Một buổi tối bình yên bên gia đình.'}];
+
+function room(){
+  R2(0,0,320,118,'#d49a62');for(let x=0;x<320;x+=6)R2(x,0,3,96,'#cb8f58');
+  R2(0,96,320,22,'#7a4a2a');R2(0,96,320,2,'#a26a3a');for(let x=10;x<320;x+=20)R2(x,101,1,14,'#6a3c20');R2(0,116,320,2,'#4a2a16');
+  R2(0,118,320,62,'#7a4a2a');for(let y=118;y<180;y+=12){R2(0,y,320,1,'#5e3720');for(let x=((y/12)%2)*20+6;x<320;x+=40)R2(x,y,1,12,'#5e3720')}
+  R2(70,142,200,30,'#d9a860');R2(73,145,194,24,'#8a2f3a');
+  R2(28,14,68,2,'#3a2412');R2(38,18,54,48,'#4a2e1a');
+  ['#3a2f6a','#7a3f78','#c75f6a','#f0864f','#ffb347','#ffd876'].forEach((c,i)=>R2(40,20+i*7,50,8,c));
+  gd(68,52,9,'#fff0b0',1);for(let x=40;x<90;x+=7){const h=8+((x*7)%9);R2(x,64-h,6,h,'#3a2450')}
+  R2(64,20,2,44,'#4a2e1a');R2(40,41,50,2,'#4a2e1a');R2(36,66,58,3,'#5a3a22');
+  R2(30,16,10,50,'#a83a3a');R2(34,16,1,50,'#8a2a2a');R2(90,16,10,50,'#a83a3a');R2(95,16,1,50,'#8a2a2a');
+  R2(2,40,34,80,'#4a2a16');R2(5,43,28,77,'#2a1830');R2(30,43,3,77,'#7a4a2a');R2(31,82,1,3,'#e0c060');
+  gd(130,38,9,'#3a2412',1);gd(130,38,7,'#f4efe0',1);[[130,32],[130,44],[124,38],[136,38]].forEach(p=>R2(p[0],p[1],1,1,'#333'));
+  R2(130,38,1,4,'#222');R2(129,39,1,1,'#222');R2(128,40,1,1,'#222');R2(127,40,1,1,'#222');
+  R2(210,26,16,20,'#3a2412');R2(212,28,12,16,'#e8d8b8');R2(215,32,6,6,'#a08060');R2(213,39,10,5,'#806040');
+  R2(232,32,12,14,'#3a2412');R2(234,34,8,10,'#e8d8b8');R2(236,37,4,4,'#a08060');
+  R2(262,86,46,32,'#6a3a22');R2(260,84,50,3,'#8a5a32');R2(266,92,18,22,'#5a3018');R2(286,92,18,22,'#5a3018');R2(283,100,1,6,'#d9a860');R2(285,100,1,6,'#d9a860');
+  R2(276,72,9,12,'#3a7a9a');R2(274,64,13,9,'#e8607a');R2(279,60,3,5,'#4ea03a');
+  R2(176,0,1,28,'#222');R2(166,28,22,3,'#c9a227');R2(169,25,16,3,'#d9b237');R2(172,22,10,3,'#e0c050');R2(175,31,4,2,'#fff0b0');
+}
+function table(){
+  R2(98,120,154,12,'#efe6d0');for(let x=98;x<252;x+=12)R2(x,120,2,12,'#d86a5a');R2(98,120,154,1,'#fff8e8');
+  R2(98,132,154,8,'#e0d4b8');for(let x=98;x<252;x+=12)R2(x,132,2,8,'#c85a4a');
+  R2(102,141,3,12,'#6a3a22');R2(245,141,3,12,'#6a3a22');
+  R2(160,127,22,4,'#f4f0e0');R2(161,126,20,2,'#e0703a');[163,168,173,177].forEach(x=>R2(x,126,2,1,'#6ab04c'));
+  R2(122,127,22,4,'#f4f0e0');R2(125,126,16,3,'#8a4a22');R2(128,126,4,1,'#c07a3a');
+  R2(196,127,22,4,'#f4f0e0');R2(198,125,18,3,'#4ea03a');R2(202,125,3,1,'#7ad04a');
+  [126,152,178,204,230].forEach(x=>{R2(x-4,122,8,3,'#f4f0e0');R2(x-4,121,8,2,'#fffaf0');R2(x-4,124,8,1,'#5a8ad0');if(x!==178){R2(x+5,121,5,1,'#d9a864');R2(x+6,122,5,1,'#d9a864')}});
+}
+const mkc=fn=>{const c=document.createElement('canvas');c.width=320;c.height=180;const s=g;g=c.getContext('2d');fn();g=s;return c};
+function chair(x,sy){R2(x-9,96+sy,18,28,'#6a3a22');R2(x-9,95+sy,18,3,'#8a5a32')}
+function bust(c,t,talk,ph){
+  const x=c.x,k=c.t==='k',sy=k?8:0,b=Math.sin(t*1.3+ph)>.6?1:0,hy=92+sy+b+(c.slump?7:0),hw=k?6:8,hh=k?7:9;
+  chair(x,sy);
+  if(c.long)R2(x-6,hy+1,12,18,c.hair);
+  R2(x-(k?5:7),hy+hh+2,k?10:14,24,c.shirt);
+  if(c.pig){R2(x-6,hy+3,2,6,c.hair);R2(x+4,hy+3,2,6,c.hair)}
+  R2(x-hw/2,hy+2,hw,hh,c.skin);R2(x-hw/2-1,hy,hw+2,3,c.hair);R2(x-hw/2-1,hy+3,1,3,c.hair);R2(x+hw/2,hy+3,1,3,c.hair);
+  if(c.bun)R2(x-2,hy-3,4,3,c.hair);
+  if(c.slump){R2(x-3,hy+5,2,1,'#222');R2(x+1,hy+5,2,1,'#222')}else{R2(x-2,hy+5,1,1,'#222');R2(x+1,hy+(c.droop?6:5),1,1,'#222')}
+  if(c.gl){R2(x-3,hy+4,3,1,'#333');R2(x,hy+4,3,1,'#333')}
+  if(c.smile){R2(x-3,hy+hh-1,1,1,'#b05a4a');R2(x-2,hy+hh,3,1,'#b05a4a');R2(x+1,hy+hh+1,2,1,'#b05a4a');R2(x+2,hy+hh+2,1,2,'#bfe3ff')}else if(c.droop){R2(x-2,hy+hh,2,1,'#b05a4a');R2(x,hy+hh+1,3,1,'#b05a4a');R2(x+2,hy+hh+2,1,2,'#bfe3ff');if(talk&&Math.floor(t*8)%2)R2(x-1,hy+hh,1,1,'#7a2020')}
+  else if(talk&&Math.floor(t*8)%2)R2(x-1,hy+hh,2,2,'#7a2020');else R2(x-1,hy+hh,2,1,'#b05a4a');
+}
+function plr(x,fy,d,w){
+  const f=Math.floor(w)%2,sw=w?(f?2:-2):0;
+  g.globalAlpha=.3;R2(x-6,fy,12,2,'#000');g.globalAlpha=1;
+  R2(x-4,fy-10,3,10-(w&&f?1:0),'#2a3a6a');R2(x+1,fy-10,3,10-(w&&!f?1:0),'#2a3a6a');
+  R2(d>0?x-8:x+5,fy-20,3,9,'#c0701a');
+  R2(x-5,fy-21,10,11,PLR.shirt);R2(x-7,fy-20+(sw>0?1:0),2,8,PLR.shirt);R2(x+5,fy-20+(sw<0?1:0),2,8,PLR.shirt);
+  R2(x-4,fy-30,8,9,PLR.skin);R2(x-4,fy-31,8,3,PLR.hair);
+  R2(d>0?x+1:x-3,fy-26,1,2,'#222');R2(d>0?x+3:x-1,fy-26,1,2,'#222');
+}
+function grender(){
+  const S=GM,t=S.t;if(S.lv===2){render2(S,t);return}if(S.scene==='yard'){yard(S,t);return}g.drawImage(RB,0,0);
+  if(S.gated){g.globalAlpha=.4;R2(5,43,25,77,'#ffd876');g.globalAlpha=1}
+  if(S.wait&&!S.arr&&!S.wait.docs){const ay=62+Math.round(Math.sin(S.t*4)*2);R2(297,ay,7,1,'#ffd24a');R2(298,ay+1,5,1,'#ffd24a');R2(299,ay+2,3,1,'#ffd24a');R2(300,ay+3,1,1,'#ffd24a')}
+  if(S.gate){const ay=26+Math.round(Math.sin(S.t*4)*2);R2(16,ay,7,1,'#ffd24a');R2(17,ay+1,5,1,'#ffd24a');R2(18,ay+2,3,1,'#ffd24a');R2(19,ay+3,1,1,'#ffd24a')}
+  if(S.arr){R2(48,54,18,6,'#f4f4f4');R2(48,57,18,1,'#e63946');R2(54,52,3,2,'#e63946');R2(57,52,3,2,'#3a7bff');R2(50,60,3,3,'#111');R2(61,60,3,3,'#111')}
+  if(!S.phone){R2(PHX-2,76,5,8,'#1a1a22');R2(PHX-1,77,3,6,'#7fc8ff');if(Math.sin(t*3)>0)R2(PHX,78,1,1,'#fff')}
+  if(!S.sat)chair(SEAT,0);
+  CH[2].droop=S.droop;CH[2].smile=S.smile;CH[2].slump=S.slump;CH.forEach((c,i)=>bust(c,t,S.spk===c.id&&S.i<S.txt.length,i*1.7));
+  if(S.sat)bust(PLR,t,false,3);
+  g.drawImage(TB,0,0);momArm(S,t);
+  for(let i=0;i<3;i++){const m=(t*7+i*5)%12;g.globalAlpha=1-m/12;R2(166+i*5+Math.round(Math.sin(t*2+i)),124-m,2,2,'#fff')}g.globalAlpha=1;
+  if(!S.sat){if(!S.call){const y=76+Math.round(Math.sin(t*4)*2);R2(SEAT-3,y,7,1,'#ffd24a');R2(SEAT-2,y+1,5,1,'#ffd24a');R2(SEAT-1,y+2,3,1,'#ffd24a');R2(SEAT,y+3,1,1,'#ffd24a')}plr(Math.round(S.px),Math.round(S.py),S.dir,S.walk)}
+  if(S.gated){med(44,150,'#f07a30');med(64,156,'#f07a30')}
+  for(let r=60;r>=20;r-=10)gd(177,40,r,'#ffcf6a',.04);
+  g.globalAlpha=.06;R2(0,0,320,180,'#ff9a3c');g.globalAlpha=.07;for(let y=120;y<170;y++)R2(52+(y-120)*.9,y,30,1,'#ffd876');g.globalAlpha=1;
+  if(S.fade>0){g.globalAlpha=S.fade;R2(0,0,320,180,'#120a14');g.globalAlpha=1}
+}
+const STROKE=[{w:'Bé Na',id:'be',t:'Mẹ ơi, mẹ làm rơi đũa rồi kìa!'},{w:'Mẹ',id:'me',t:'Mẹ... mẹ khô... không... cầm... đượ...'}];
+function momArm(S,t){
+  const x=178,K='#d9a864',sk='#f0c49c',sl='#3a8a6a';
+  if(S.eat0===null){R2(x+5,121,5,1,K);R2(x+6,122,5,1,K);return}
+  if(S.drop0){const d=S.t-S.drop0,y=Math.min(130,103+Math.round(90*d*d));
+    if(y<130){R2(x+1,y,1,5,K);R2(x+2,y,1,5,K)}else{R2(x-2,130,9,1,K);R2(x-1,131,9,1,K)}
+    if(S.arms){const e=S.t-S.arms,a=Math.min(1,e/.8),ly=Math.round(108-18*a),ry=e>1.6?Math.round(90+Math.min(1,(e-1.6)/.6)*28):ly;
+      R2(x-10,ly,3,112-ly,sl);R2(x-10,ly-3,3,3,sk);
+      R2(x+8,Math.min(ry,108),3,Math.abs(ry-108)+4,sl);R2(x+8,ry<108?ry-3:ry,3,3,sk);return}
+    R2(x+7,108,3,12,sl);R2(x+6,120,4,2,sk);return}
+  const te=S.t-S.eat0;let s;
+  if(te<2.4){const p=(te%1.2)/1.2;s=p<.5?p*2:2-p*2}else s=Math.min(1,(te-2.4)/.6);
+  s=s*s*(3-2*s);
+  const j=te>3?(Math.floor(S.t*25)%2?1:-1):0,hx=Math.round(x+7-2*s)+j,hy=Math.round(125-19*s)+j;
+  for(let i=0;i<=5;i++)R2(x+7+(hx-x-7)*i/5,108+(hy-108)*i/5,3,3,sl);
+  R2(hx,hy,3,3,sk);
+  for(let k=0;k<5;k++){R2(hx-k,hy-k,1,1,K);R2(hx-k,hy-k+1,1,1,K)}
+  if(s>.3)R2(hx-5,hy-5,2,1,'#fffaf0');
+}
+function face(){
+  const H_='#1c1418',S_='#f0c49c',D='#b05a4a';
+  R2(0,0,64,64,'#2a1830');R2(10,8,44,54,H_);R2(8,54,48,10,'#3a8a6a');R2(26,44,12,12,'#e0b088');
+  R2(16,12,32,36,S_);R2(14,26,2,8,S_);R2(48,26,2,8,S_);R2(14,8,36,8,H_);R2(14,16,3,14,H_);R2(47,16,3,14,H_);
+  R2(21,24,8,2,H_);R2(35,26,8,2,H_);
+  R2(22,28,6,4,'#fff');R2(24,29,3,3,'#222');
+  R2(36,30,6,3,'#fff');R2(38,31,2,2,'#222');R2(35,29,8,2,'#d9a98a');
+  R2(31,34,2,5,'#d9a07a');R2(23,38,1,4,'#d9a07a');
+  R2(24,42,8,2,D);R2(32,43,6,2,D);R2(38,45,4,2,D);R2(42,47,2,2,D);R2(41,49,2,7,'#bfe3ff');
+  g.globalAlpha=.5;for(let y=10;y<60;y+=4)R2(32,y,1,2,'#fff');g.globalAlpha=1;
+  [[33,26,12,10],[22,40,24,12]].forEach(([x,y,w,h])=>{R2(x,y,w,1,'#e63946');R2(x,y+h,w,1,'#e63946');R2(x,y,1,h,'#e63946');R2(x+w,y,1,h+1,'#e63946')});
+}
+function showNoti(){GM.mode='end';const p=g;g=$('nc').getContext('2d');face();g=p;$('noti').hidden=false}
+function closeNoti(){$('noti').hidden=true;showChoice()}
+/* ---- Điện thoại và cuộc gọi 115 ---- */
+const PHN={open:false,scr:'lock',num:'',inCall:false,tm:0,sec:0},pbtn=$('pbtn'),chat=$('chat'),opts=$('opts');
+let qi=0,mist=0;
+const DEV=['..XXXX..','..XBBX..','..XBBX..','..XBBX..','..XBBX..','..XBBX..','..XXXX..','..XXXX..'],
+  HAND=['XXX.....','XXXX....','XXXX....','.XXX....','..XXX...','...XXXX.','....XXXX','....XXXX'];
+let CALL=[
+ {q:'Alo, tổng đài cấp cứu 115 nghe. Bạn cần giúp gì?',a:'Tôi ghi nhận nghi ngờ đột quỵ.',o:[
+  ['Mẹ tôi méo miệng, yếu tay, nói ngọng. Tôi nghi bà bị đột quỵ!',1],
+  ['Nhà tôi có người không khỏe, cho xe qua giúp.',0,'Bạn nói rõ hơn giúp tôi: người bệnh có biểu hiện gì?'],
+  ['Mẹ tôi chỉ hơi mệt thôi, chắc không sao.',0,'Nói "mệt" thì tôi khó đánh giá. Bạn tả cụ thể các biểu hiện nhé.']]},
+ {q:'Triệu chứng bắt đầu từ mấy giờ?',a:'Tôi ghi giờ khởi phát là 18:40.',o:[
+  ['Khoảng 18:40, lúc cả nhà đang ăn cơm.',1],
+  ['Tôi không nhớ rõ giờ.',0,'Giờ khởi phát rất quan trọng để bác sĩ quyết định điều trị. Bạn nhớ lại giúp tôi.'],
+  ['Từ chiều, khoảng 5 giờ.',0,'Bạn nhìn lại đồng hồ và nhớ lúc mẹ rơi đũa là mấy giờ nhé.']]},
+ {q:'Cho tôi địa chỉ chính xác để xe cứu thương đến.',a:'Xe sẽ đến địa chỉ đó.',o:[
+  ['Số 12, đường Hoa Mai, phường 3, Quận 1. Nhà có cổng xanh.',1],
+  ['Nhà tôi ở Quận 1.',0,'Chưa đủ. Cho tôi số nhà, tên đường và phường.'],
+  ['Tôi không biết địa chỉ.',0,'Bạn nhìn quanh hoặc hỏi người nhà, tôi cần số nhà và tên đường.']]},
+ {q:'Bệnh nhân còn tỉnh và thở bình thường không?',a:'Được rồi.',o:[
+  ['Mẹ còn tỉnh, thở bình thường nhưng nói ngọng, tay trái yếu.',1],
+  ['Tôi chưa kiểm tra, không biết.',0,'Bạn xem bà còn đáp lời và thở đều không, rồi báo lại tôi.'],
+  ['Mẹ tôi đang ngủ rồi.',0,'Nếu bà lơ mơ, khó đánh thức thì rất nguy hiểm. Bạn gọi hỏi xem bà còn đáp lời không.']]},
+ {q:'Trong lúc chờ xe, bạn sẽ làm gì?',a:'',o:[
+  ['Cho mẹ ngồi hoặc nằm yên, đầu hơi cao, không cho ăn uống gì và chờ xe.',1],
+  ['Cho mẹ uống nước và thuốc huyết áp.',0,'Đừng cho ăn uống hay uống thuốc, bệnh nhân có thể bị sặc. Bạn chọn lại nhé.'],
+  ['Chích máu đầu ngón tay, cạo gió cho mẹ.',0,'Không làm vậy. Mẹo dân gian không có tác dụng và làm mất thời gian quý giá.']]}];
+pbtn.innerHTML=ic(DEV,c=>c==='X'?'#e8e8f0':'#7fc8ff')+'<span>Điện thoại</span>';
+$('grid').innerHTML=[['#4ea0ff','Ảnh'],['#ff6b6b','Lịch'],['#ffcf4a','Ghi chú'],['#7a5af0','Giờ'],['#3ccfcf','Bản đồ'],['#ff9a3c','Thời tiết'],['#9a9aa8','Cài đặt'],['#e05a9a','Nhạc']].map(a=>`<div class="ap"><i style="background:${a[0]}"></i><span>${a[1]}</span></div>`).join('');
+$('dock').innerHTML=`<button class="papp" id="papp" aria-label="Điện thoại">${ic(HAND,()=>'#fff')}</button>`+['#3ccfa0','#4ea0ff','#ff6b6b'].map(c=>`<i class="dm" style="background:${c}"></i>`).join('');
+$('keys').innerHTML=[...'123456789*0#'].map(k=>`<button data-k="${k}">${k}</button>`).join('')+`<span></span><button class="cb" data-k="call" aria-label="Gọi">${ic(HAND,()=>'#fff')}</button><button class="db" data-k="<">Xóa</button>`;
+const pscr=n=>{PHN.scr=n;['Lock','Home','Dial','Call'].forEach(k=>$('s'+k).hidden=n!==k.toLowerCase())};
+function setObj(){obj.textContent=GM.phone?'Mục tiêu: bấm nút điện thoại bên phải (hoặc phím P) để gọi 115':'Mục tiêu: lấy điện thoại trên tủ, rồi gọi 115'}
+function startCall(){const S=GM;S.call=true;S.mode='play';obj.textContent='Mục tiêu: rời khỏi ghế (E), lấy điện thoại và gọi 115'}
+function openPhone(){const S=GM;if(!S||S.mode!=='play')return;S.mode='phone';S.keys={l:0,r:0,u:0,d:0};phoneSkin(S.lv===2);PHN.open=true;PHN.num='';$('num').textContent='';$('pmsg').textContent='';$('phone').hidden=false;$('pOff').hidden=false;pscr('lock')}
+function closePhone(){if(PHN.inCall)return;PHN.open=false;$('phone').hidden=true;GM.mode='play'}
+function unlock(){const L=$('sLock');L.classList.add('up');setTimeout(()=>{if(PHN.scr==='lock')pscr('home');L.classList.remove('up')},320)}
+function dig(k){PHN.num=k==='<'?PHN.num.slice(0,-1):(PHN.num.length<12?PHN.num+k:PHN.num);$('num').textContent=PHN.num;$('pmsg').textContent=''}
+function callNow(){
+  const n=PHN.num,M={'113':'Bạn vừa gọi 113 (Công an). Cấp cứu y tế là số khác.','114':'Bạn vừa gọi 114 (Cứu hỏa). Cấp cứu y tế là số khác.'};
+  if(!n)return;
+  if(n!=='115'){$('pmsg').textContent=M[n]||'Số máy không đúng. Hãy bấm số cấp cứu y tế.';return}
+  if(!GM.call){$('pmsg').textContent='Chưa có ai cần cấp cứu lúc này.';return}
+  if(GM.wait){$('pmsg').textContent='Bạn đã gọi 115 rồi. Xe cứu thương đang tới.';return}
+  startCallUI();
+}
+function bub(w,t){const d=document.createElement('div');d.className='m '+w;d.textContent=t;chat.appendChild(d);chat.scrollTop=chat.scrollHeight}
+function showOpts(q){opts.innerHTML='';q.o.map(o=>[Math.random(),o]).sort((a,b)=>a[0]-b[0]).forEach(([,o])=>{const b=document.createElement('button');b.className='opt';b.textContent=o[0];b.onclick=()=>pick(q,o,b);opts.appendChild(b)})}
+function pick(q,o,b){
+  bub('me',o[0]);const all=[...opts.children];all.forEach(x=>x.disabled=true);b.dataset.used=1;
+  if(o[1])setTimeout(()=>next2(q),750);
+  else{mist++;setTimeout(()=>{bub('d',o[2]);all.forEach(x=>{if(!x.dataset.used)x.disabled=false})},750)}
+}
+function next2(q){
+  qi++;const n=CALL[qi];
+  if(!n){bub('d',CALL.fin||'Tốt. Xe cứu thương đang tới, khoảng 10 phút nữa. Bạn mở cửa, chuẩn bị giấy tờ và thuốc bà đang dùng, rồi giữ máy nhé.');opts.innerHTML='';later(3200,endCall);return}
+  bub('d',(q.a?q.a+' ':'')+n.q);showOpts(n);
+}
+function startCallUI(){
+  pscr('call');PHN.inCall=true;PHN.sec=0;$('pOff').hidden=true;$('cn').textContent='Đang gọi 115...';$('ct').textContent='';chat.innerHTML='';opts.innerHTML='';qi=0;mist=0;
+  setTimeout(()=>{if(!PHN.inCall)return;$('cn').textContent='Tổng đài 115';$('ct').textContent='00:00';clearInterval(PHN.tm);
+    PHN.tm=setInterval(()=>{PHN.sec++;$('ct').textContent=String(PHN.sec/60|0).padStart(2,'0')+':'+String(PHN.sec%60).padStart(2,'0')},1000);
+    bub('d',CALL[0].q);showOpts(CALL[0])},1600);
+}
+function endCall(){if(GM.lv===2)end2();else startWait()}
+function endCallOld(){
+  clearInterval(PHN.tm);PHN.inCall=false;PHN.open=false;$('phone').hidden=true;GM.mode='end';
+  showEnd('Cuộc gọi hoàn tất','Xe cấp cứu đang trên đường tới. '+(mist?`Bạn cần tổng đài gợi ý thêm ${mist} lần.`:'Bạn khai đủ thông tin ngay lần đầu.')+' Phần chờ xe và hỗ trợ bệnh nhân sắp ra mắt.','Chơi lại',startLevel);
+}
+function phoneKey(e){
+  const k=e.key;
+  if(PHN.scr==='lock'){if(k==='ArrowUp'||k==='Enter'||k===' '){e.preventDefault();unlock()}else if(k==='Escape')closePhone()}
+  else if(PHN.scr==='dial'){if(/^[0-9*#]$/.test(k))dig(k);else if(k==='Backspace')dig('<');else if(k==='Enter'){e.preventDefault();callNow()}else if(k==='Escape')pscr('home')}
+  else if(PHN.scr==='home'&&k==='Escape')closePhone();
+}
+pbtn.addEventListener('click',openPhone);
+$('pOff').addEventListener('click',closePhone);
+$('papp').addEventListener('click',()=>pscr('dial'));
+$('hbD').addEventListener('click',()=>pscr('home'));
+$('keys').addEventListener('mousedown',e=>e.preventDefault());
+$('keys').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.k==='call')callNow();else dig(b.dataset.k)});
+(function(){const L=$('sLock');let y0=null;
+  L.addEventListener('pointerdown',e=>{y0=e.clientY;L.style.transition='none'});
+  addEventListener('pointermove',e=>{if(y0!==null)L.style.transform='translateY('+Math.min(0,e.clientY-y0)+'px)'});
+  addEventListener('pointerup',e=>{if(y0===null)return;const d=e.clientY-y0;y0=null;L.style.transition='';L.style.transform='';if(d<-70||(Math.abs(d)<6&&e.target.closest&&e.target.closest('.hb')))unlock()});
+})();
+/* ---- Chờ xe cứu thương ---- */
+const CARE=[['Đỡ mẹ ngồi tựa ghế, đầu hơi cao, nới lỏng áo và nhẹ giọng trấn an.',1],
+ ['Cho mẹ uống nước ấm và thuốc huyết áp cho khỏe.',0,'Mẹ ho sặc khi bạn cho uống. Bệnh nhân đột quỵ có thể khó nuốt, không nên cho ăn uống hay uống thuốc.'],
+ ['Cạo gió, chích máu đầu ngón tay cho mẹ.',0,'Bạn mất mấy phút quý giá mà mẹ không đỡ hơn. Mẹo dân gian không điều trị được đột quỵ.']];
+const TIME=[['Khoảng 18:40, lúc mẹ làm rơi đũa, méo miệng và nói ngọng.',1],
+ ['Tôi không nhớ là mấy giờ.',0,'Giờ khởi phát rất quan trọng. Bạn nhìn đồng hồ trên tường và nhớ lại giúp tôi!'],
+ ['Chắc là buổi chiều rồi.',0,'Buổi chiều chưa đủ rõ. Bạn nhìn đồng hồ trên tường giúp tôi nhé!']];
+function ask(title,list,cb){
+  GM.mode='choice';$('askT').textContent=title;const B=$('askB');B.innerHTML='';
+  list.slice().sort(()=>Math.random()-.5).forEach(o=>{const b=document.createElement('button');b.className='btn';b.textContent=o[0];b.onclick=()=>{$('ask').hidden=true;cb(o)};B.appendChild(b)});
+  $('ask').hidden=false;B.firstChild.focus();
+}
+function waitObj(){const W_=GM.wait,m=v=>v?'[x] ':'[ ] ';obj.textContent='Trong lúc chờ xe: '+m(W_.care)+'chăm sóc Mẹ  '+m(W_.docs)+'lấy giấy tờ bệnh án của Mẹ trong tủ'}
+const back=()=>{GM.mode='play';waitObj()};
+function startWait(){
+  const S=GM;clearInterval(PHN.tm);PHN.inCall=false;PHN.open=false;$('phone').hidden=true;
+  S.wait={t:75,care:0,docs:0,door:0,bad:0};
+  talk([{t:'Bạn cất điện thoại. Xe cứu thương sẽ tới sau ít phút. Trong lúc chờ, hãy làm những việc cần thiết!'}],()=>{S.mode='play';waitObj()});
+}
+function care(list){
+  ask('Bạn chăm sóc Mẹ thế nào trong lúc chờ xe?',list,o=>{
+    if(o[1]){GM.wait.care=1;talk([{t:'Bạn đỡ mẹ ngồi tựa ghế, nới lỏng áo, nhẹ giọng trấn an. Bạn nhớ không cho mẹ ăn uống gì.'}],back)}
+    else{GM.wait.bad++;GM.wait.t=Math.max(0,GM.wait.t-10);talk([{t:o[2]}],()=>care(list.filter(x=>x!==o)))}
+  });
+}
+function doWait(k){
+  const W_=GM.wait;
+  if(k==='door')openGate();
+  else if(k==='docs'){W_.docs=1;talk([{t:'Bạn mở ngăn tủ, lấy sổ khám bệnh, thẻ bảo hiểm y tế, giấy tờ tùy thân và đơn thuốc của mẹ bỏ vào túi.'}],back)}
+  else care(CARE);
+}
+function arrive(){
+  const S=GM,W_=S.wait;S.arr=true;S.mode='idle';inv.textContent='';obj.textContent='';
+  const L=[{t:'Tiếng còi hú vang lên ngoài ngõ. Xe cứu thương đã tới!'}];
+  
+  L.push({w:'Nhân viên y tế',t:'Cấp cứu 115 đây! Cổng đang khóa, có ai ra mở cổng giúp chúng tôi không?'});
+  talk(L,startGate);
+}
+function medQ(list){
+  ask('Bạn trả lời nhân viên y tế:',list,o=>{
+    if(o[1])talk([{w:'Nhân viên y tế',t:'Cảm ơn bạn. Giờ khởi phát rất quan trọng để bác sĩ quyết định điều trị. Chúng tôi sẽ đưa bà vào viện ngay!'}],finishL1);
+    else{GM.wait.bad++;talk([{w:'Nhân viên y tế',t:o[2]}],()=>medQ(list.filter(x=>x!==o)))}
+  });
+}
+function finishL1(){
+  const W_=GM.wait,m=[];GM.mode='end';
+  if(W_.bad)m.push('Bạn đã chọn sai '+W_.bad+' lần.');
+  
+  if(!W_.docs)m.push('Chưa lấy giấy tờ bệnh án của mẹ trong tủ để đưa cho bệnh viện.');
+  if(!W_.care)m.push('Chưa chăm sóc mẹ trong lúc chờ xe.');
+  sheetRes('Mẹ lên xe cấp cứu và tới bệnh viện trong giờ vàng. '+(m.length?m.join(' '):'Bạn đã nhận ra dấu hiệu FAST, gọi 115, chăm sóc đúng cách và báo đúng giờ khởi phát (18:40).'),'Chơi lại',startLevel);
+}
+function med(x,fy,col){g.globalAlpha=.3;R2(x-6,fy,12,2,'#000');g.globalAlpha=1;R2(x-4,fy-10,3,10,'#2a3a6a');R2(x+1,fy-10,3,10,'#2a3a6a');R2(x-5,fy-21,10,11,col);R2(x-1,fy-21,2,11,'#fff');R2(x-7,fy-20,2,8,col);R2(x+5,fy-20,2,8,col);R2(x-4,fy-30,8,9,'#f0c49c');R2(x-4,fy-31,8,3,'#222');R2(x-3,fy-26,1,2,'#222');R2(x+2,fy-26,1,2,'#222')}
+function startGate(){const S=GM;S.mode='play';S.gate={t:25};obj.textContent='Chạy ra cửa (bên trái) để mở cổng cho nhân viên y tế!'}
+function goGate(){
+  const S=GM;S.mode='idle';inv.textContent='';obj.textContent='';S.fade=1;S.scene='yard';S.px=40;S.py=150;S.dir=1;
+  talk([{t:'Bạn mở cửa chạy ra sân. Xe cứu thương đang đậu ngoài cổng sắt, nhân viên y tế đứng chờ phía sau song sắt.'}],()=>{S.mode='play';obj.textContent='Chạy tới cổng sắt và bấm E để mở cổng!'});
+}
+function gateFail(){
+  const S=GM;S.gate=null;S.mode='idle';inv.textContent='';obj.textContent='';
+  talk([{t:'Nhân viên y tế đứng ngoài cổng khóa, gọi mãi không ai ra mở. Họ không thể vào nhà.'},{t:'Mỗi phút chậm trễ đều làm Mẹ nguy hiểm hơn.'}],()=>{
+    S.mode='end';
+    showEnd('Cổng không được mở','Nhân viên y tế không thể vào nhà vì cổng bị khóa. Khi gọi cấp cứu, hãy cử người ra mở cổng và đón xe ngay. Với đột quỵ, mỗi phút đều quan trọng.','Thử lại',()=>{endEl.hidden=true;S.scene='room';S.gated=false;S.fade=1;S.px=120;S.py=166;S.dir=-1;startGate()});
+  });
+}
+function yard(S,t){
+  ['#3a2f6a','#7a3f78','#c75f6a','#f0864f','#ffb347','#ffd876'].forEach((c,i)=>R2(0,i*20,320,21,c));
+  gd(160,94,22,'#fff0b0',1);
+  for(let x=96;x<224;x+=9){const h=16+((x*7)%17);R2(x,100-h,8,h,'#3a2450')}
+  R2(96,100,128,28,'#c9a27a');R2(307,100,13,28,'#c9a27a');R2(96,100,128,3,'#e0bc90');R2(307,100,13,3,'#e0bc90');
+  for(let x=100;x<224;x+=22)R2(x,106,1,20,'#b08a62');
+  R2(0,28,100,100,'#d9b48a');R2(0,20,104,10,'#8a3a2a');R2(0,30,100,2,'#b08a62');
+  R2(8,62,28,66,'#4a2a16');R2(11,65,22,63,'#6a3a22');R2(29,95,2,3,'#e0c060');R2(4,126,36,3,'#9a8a7a');R2(20,52,6,6,'#ffd876');
+  R2(54,58,32,28,'#4a2e1a');R2(56,60,28,24,'#ffd876');R2(69,60,2,24,'#4a2e1a');R2(56,71,28,2,'#4a2e1a');
+  R2(0,128,320,52,'#8a7a6a');
+  for(let y=128;y<180;y+=13){R2(0,y,320,1,'#756656');for(let x=(y/13%2)*16;x<320;x+=32)R2(x,y,1,13,'#756656')}
+  R2(104,118,10,10,'#a0522d');R2(102,104,14,14,'#3a8a4a');R2(150,118,10,10,'#a0522d');R2(148,104,14,14,'#4ea03a');
+  R2(234,112,62,16,'#4a4458');
+  R2(240,96,36,24,'#f4f4f4');R2(276,104,18,16,'#f4f4f4');R2(240,112,54,3,'#e63946');R2(250,100,3,10,'#e63946');R2(246,103,10,3,'#e63946');
+  R2(282,106,8,6,'#7fc8ff');R2(248,92,6,4,'#e63946');R2(254,92,6,4,'#3a7bff');R2(246,120,8,8,'#111');R2(280,120,8,8,'#111');
+  const p=S.gated?Math.min(1,(t-S.gopen)/1.2):0;
+  if(!S.gated){med(250,136,'#f07a30');med(268,138,'#f07a30')}
+  const f=S.gated?Math.min(1,(t-S.gopen)/.8):0,w=Math.round(31*(1-f));
+  const leaf=(x,ww)=>{if(ww<2)return;R2(x,76,ww,3,'#1a1a22');R2(x,96,ww,2,'#1a1a22');R2(x,118,ww,3,'#1a1a22');for(let b=1;b<ww;b+=5){R2(x+b,76,2,52,'#1a1a22');R2(x+b,72,2,4,'#3a3a46')}};
+  leaf(234,w);leaf(296-w,w);
+  if(!S.gated)R2(263,98,5,5,'#ffd24a');
+  R2(224,66,11,62,'#7a6a5a');R2(296,66,11,62,'#7a6a5a');R2(222,62,15,5,'#9a8a7a');R2(294,62,15,5,'#9a8a7a');
+  if(S.gated){med(Math.round(250-70*p),136,'#f07a30');med(Math.round(268-70*p),138,'#f07a30')}
+  if(!S.gated){const y=46+Math.round(Math.sin(t*4)*2);R2(262,y,7,1,'#ffd24a');R2(263,y+1,5,1,'#ffd24a');R2(264,y+2,3,1,'#ffd24a');R2(265,y+3,1,1,'#ffd24a')}
+  plr(Math.round(S.px),Math.round(S.py),S.dir,S.walk);
+  g.globalAlpha=.07;R2(0,0,320,180,'#ff9a3c');g.globalAlpha=1;
+  if(S.fade>0){g.globalAlpha=S.fade;R2(0,0,320,180,'#120a14');g.globalAlpha=1}
+}
+function openGate(){
+  const S=GM;S.gate=null;S.mode='idle';inv.textContent='';obj.textContent='';S.gated=true;S.gopen=S.t;
+  talk([{t:'Bạn kéo then cài, đẩy hai cánh cổng sắt mở ra. Nhân viên y tế mang cáng chạy vào sân.'}],()=>{
+    S.fade=1;S.scene='room';S.px=110;S.py=166;S.dir=-1;
+    talk([{w:'Nhân viên y tế',t:'Cảm ơn bạn đã mở cổng! Bệnh nhân đâu? Triệu chứng bắt đầu lúc mấy giờ?'}],()=>medQ(TIME));
+  });
+}
+let shMode='home';
+function openSheet(game,kind,res){
+  kind=game?kind:1;const sc=$('sheet');sc.querySelector('h2').textContent='Cẩm nang cấp cứu';shK=kind;sc.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',+b.dataset.k===kind));
+  sc.querySelector('.sb').innerHTML='<div class="res" id="shRes" hidden></div>'+(kind===2?G2:G1);if(res)$('shRes').textContent=res;
+  shMode=game?'game':'home';$('shRes').hidden=!game||!$('shRes').textContent;$('sheet').hidden=false;
+  $('shA').textContent=game?'Chơi lại':'Đóng';$('shB').hidden=!game;$('sheet').querySelector('.sb').scrollTop=0;$('shA').focus();
+}
+function sheetRes(t,kind){const k=kind===2?2:1,sc=calcScore(k);askSave(k,sc,()=>openSheet(true,k,'Kết quả: '+t+' Điểm: '+sc))}
+$('shA').addEventListener('click',()=>{$('sheet').hidden=true;if(shMode==='game')(GM&&GM.lv===2?startLevel2:startLevel)()});
+$('shB').addEventListener('click',()=>{$('sheet').hidden=true;quit()});
+addEventListener('keydown',e=>{if(!$('sheet').hidden&&shMode==='home'&&e.key==='Escape')$('sheet').hidden=true});
+/* ===== Màn 2: Đuối nước - Hồ bơi khu nghỉ dưỡng ===== */
+const CALL1=CALL;
+const CALL2=[
+ {q:'Alo, tổng đài cấp cứu 115 nghe. Bạn cần giúp gì?',a:'Tôi đã ghi nhận ca đuối nước.',o:[
+  ['Một bé trai bị đuối nước ở hồ bơi, đã được vớt lên, bé không thở!',1],
+  ['Có người bị ngã ở hồ bơi, cho xe qua xem giúp.',0,'Bạn nói rõ hơn giúp tôi: người đó bị làm sao, còn thở không?'],
+  ['Bé uống nhiều nước thôi, chắc không sao.',0,'Nếu bé bất động thì rất nguy hiểm. Bạn mô tả cụ thể tình trạng của bé nhé.']]},
+ {q:'Cho tôi địa chỉ chính xác để xe cấp cứu đến.',a:'Xe sẽ đến địa chỉ đó.',o:[
+  ['Hồ bơi khu nghỉ dưỡng Hoàng Hôn, số 5 đường Bờ Biển. Tôi sẽ ra cổng đón xe.',1],
+  ['Gần biển thôi, bạn tự tìm nhé.',0,'Thế chưa đủ. Cho tôi tên khu nghỉ dưỡng, số nhà và tên đường.'],
+  ['Tôi không biết địa chỉ.',0,'Bạn hỏi người xung quanh hoặc nhìn biển hiệu, tôi cần địa chỉ cụ thể.']]},
+ {q:'Bé khoảng mấy tuổi, có phản ứng và có thở không?',a:'Được rồi.',o:[
+  ['Khoảng 4 tuổi, bé không phản ứng và không thở.',1],
+  ['Tôi không biết, tôi chưa kiểm tra.',0,'Bạn nhìn ngực bé và áp tai nghe hơi thở trong 10 giây, rồi báo lại tôi.'],
+  ['Bé đang ngủ rồi.',0,'Bé bất tỉnh sau khi đuối nước không phải ngủ. Bạn kiểm tra lại giúp tôi.']]},
+ {q:'Đặt bé nằm ngửa trên nền phẳng, bật loa ngoài. Bạn sẽ làm gì để cứu bé?',a:'',o:[
+  ['Đặt tay giữa ngực bé, ép sâu khoảng 1/3 ngực, 100 đến 120 lần mỗi phút, xen 2 lần thổi ngạt.',1],
+  ['Dốc ngược bé cho nước chảy ra trước.',0,'Đừng dốc ngược, mất thời gian và dễ sặc. Hãy ép tim ngay.'],
+  ['Chờ xe cấp cứu đến rồi tính.',0,'Không được chờ. Bé không thở thì phải ép tim ngay lập tức.']]}];
+CALL2.fin='Tốt. Xe cấp cứu đang tới. Bạn bắt đầu ép tim ngay và không dừng cho đến khi bé thở lại hoặc nhân viên y tế đến.';
+const SH1=$('sheet').querySelector('.sb').innerHTML.replace(/<div class="res"[^>]*><\/div>/,'');
+const SH2=`<h3>1. Nhận biết: đuối nước rất lặng lẽ</h3><ul><li>Người đuối nước thường không kêu hay vẫy tay: đầu ngửa, miệng sát mặt nước, tay đập yếu xuống nước.</li><li>Trẻ nhỏ có thể chìm chỉ sau vài chục giây. Trẻ đang im lặng dưới nước là dấu hiệu đáng lo.</li></ul>
+<h3>2. Cứu từ trên bờ: HÉT, NÉM, CHÌA</h3><ul><li><b>HÉT</b> to gọi người xung quanh và nhân viên cứu hộ.</li><li><b>NÉM</b> phao cứu sinh hoặc vật nổi cho nạn nhân bám vào.</li><li><b>CHÌA</b> vật dài (cây vớt lá, gậy) để kéo vào bờ, nằm thấp để khỏi bị kéo ngã.</li><li class="no">KHÔNG nhảy xuống cứu nếu chưa được huấn luyện: nạn nhân hoảng loạn có thể túm chặt và kéo bạn chìm theo.</li></ul>
+<h3>3. Sau khi đưa lên bờ</h3><ul><li>Đặt nằm ngửa trên nền phẳng, vỗ vai gọi to, nhìn ngực và nghe hơi thở trong tối đa 10 giây.</li><li>Nếu không thở: gọi 115 ngay, bật loa ngoài và bắt đầu hồi sinh tim phổi.</li><li>Ép giữa ngực, sâu khoảng 1/3 bề dày lồng ngực, 100 đến 120 lần mỗi phút, xen 2 lần thổi ngạt. Không dừng đến khi bé thở lại hoặc nhân viên y tế tới.</li><li>Nếu bé nôn: nghiêng đầu sang một bên, lau sạch miệng rồi tiếp tục.</li><li class="no">KHÔNG dốc ngược nạn nhân, KHÔNG ấn bụng ép nước ra.</li></ul>
+<h3>4. Gọi 115, nói gì?</h3><ul><li>Địa chỉ đầy đủ, tuổi nạn nhân, có phản ứng và có thở không, bạn đã làm gì.</li></ul>
+<h3>5. Phòng ngừa</h3><ul><li>Luôn trông trẻ trong tầm tay khi ở gần nước, không rời mắt.</li><li>Cho trẻ mặc áo phao, dạy bơi, có hàng rào quanh hồ.</li><li>Biết vị trí phao và dụng cụ cứu hộ, lưu sẵn số 115 trong điện thoại.</li></ul>
+<div class="note">Cẩm nang mang tính giáo dục, không thay thế khóa huấn luyện sơ cứu chính thức.</div>`;
+const INTRO2=[{t:'Chiều muộn ở khu nghỉ dưỡng Hoàng Hôn. Bạn đang thư giãn bên hồ bơi, điện thoại để trên bàn cạnh ghế nằm.'},{t:'Một gia đình đang chơi nước, vài người nằm nghỉ dưới ô. Nhân viên cứu hộ đang nghỉ giải lao.'}];
+const CHK=[['Đặt bé nằm ngửa, vỗ vai gọi to, nhìn ngực và áp tai nghe hơi thở (dưới 10 giây).',1],['Dốc ngược bé lên cho nước chảy ra.',0,'Dốc ngược không giúp ích, mất thời gian và dễ gây sặc. Bạn đặt bé xuống lại.'],['Ấn mạnh vào bụng để ép nước ra.',0,'Ấn bụng làm bé nôn và sặc vào phổi, không cứu được bé. Bạn dừng lại.']];
+function blk2(x,y){return x>36&&x<284&&y>95&&y<150}
+function phoneSkin(b){const q=s=>document.querySelector(s);q('#sLock .lt').textContent=b?'16:05':'18:42';q('.stat span').textContent=b?'16:05':'18:42';q('#sLock .ld').textContent=b?'Thứ Bảy, 17 tháng 10':'Thứ Sáu, 16 tháng 10';q('#sLock .nt').innerHTML=b?'<b>Khu nghỉ dưỡng Hoàng Hôn</b><br>Chào mừng bạn! Hồ bơi mở cửa đến 18:00.':'<b>Nhóm Gia đình</b><br>Mẹ: Con về ăn cơm nhé, mẹ nấu canh chua.'}
+function invUp(){const S=GM,a=[];if(S.phone)a.push('điện thoại');if(S.buoy)a.push('phao cứu sinh');if(S.pole)a.push('cây vớt lá');inv.textContent=a.length?'Đang giữ: '+a.join(', '):''}
+function itemTalk(t){talk([{t}],()=>{GM.mode='play';invUp()})}
+function pp(x,y,hair,skin,t,ph,fl){const b=Math.round(Math.sin(t*1.5+ph));R2(x-3,y-9+b,6,6,skin);R2(x-3,y-10+b,6,2,hair);R2(x-5,y-4+b,10,3,skin);g.globalAlpha=.6;R2(x-6,y-2,12,7,'#3fb3d6');g.globalAlpha=1;if(fl)R2(x-6,y-3,12,3,'#ff6b6b')}
+function lounger(x,hat,sk,suit){R2(x,162,46,5,'#f4f4f4');R2(x,156,10,7,'#f4f4f4');for(let i=12;i<46;i+=8)R2(x+i,162,3,5,'#3a8ad0');R2(x+8,157,7,6,sk);R2(x+7,155,9,3,hat);R2(x+15,158,18,5,suit);R2(x+33,160,13,3,sk)}
+function umb(x,c){R2(x-28,138,56,5,c);R2(x-22,135,44,3,c);for(let i=-24;i<24;i+=12)R2(x+i,138,4,5,'#fff');R2(x-1,143,2,24,'#8a6a3a')}
+function ar2(x,y,t){const a=y+Math.round(Math.sin(t*4)*2);R2(x-3,a,7,1,'#ffd24a');R2(x-2,a+1,5,1,'#ffd24a');R2(x-1,a+2,3,1,'#ffd24a');R2(x,a+3,1,1,'#ffd24a')}
+function render2(S,t){
+  ['#5aa9f0','#7bbdf5','#9dcdf7','#bfdcf5','#ffe9c0','#ffdca2'].forEach((c,i)=>R2(0,i*12,320,13,c));
+  gd(260,36,15,'#fff2a0',1);
+  R2(0,26,320,42,'#e8d4b0');R2(0,20,320,8,'#a0522d');
+  for(let x=8;x<320;x+=26){R2(x,34,12,14,'#4a6a8a');R2(x+5,34,1,14,'#e8e8f0');R2(x,40,12,1,'#e8e8f0')}
+  [[18,50],[298,46]].forEach(([x,y])=>{R2(x,y,3,40,'#6a4a2a');[[-9,-3],[3,-3],[-7,-7],[2,-7]].forEach(([a,b])=>R2(x+a,y+b,9,3,'#2f8a3a'))});
+  R2(0,62,320,14,'#2f7a3a');for(let x=2;x<320;x+=6)R2(x,60+((x*5)%4),3,4,'#3f9a4a');
+  R2(0,76,320,104,'#e8d8bc');for(let y=78;y<180;y+=13)R2(0,y,320,1,'#d4c4a4');
+  R2(296,66,16,4,'#e63946');R2(298,70,12,3,'#e8e8f0');R2(298,73,2,19,'#e8e8f0');R2(308,73,2,19,'#e8e8f0');
+  R2(34,94,252,58,'#f4ece0');R2(38,98,244,50,'#3fb3d6');R2(200,98,82,50,'#2f9bc8');
+  for(let i=0;i<14;i++){const x=((i*43+t*10)%236)+40,y=100+((i*17)%44);R2(x,y,8,1,'#a8e4f4')}
+  pp(80,116,'#2a1a14','#e0b088',t,0);pp(102,122,'#6a3a1a','#f0c49c',t,1.7);pp(132,113,'#2a1a14','#f4cfa4',t,3.1,1);
+  const cx=Math.round(S.cx),cy=S.cy;
+  if(S.cstate==='water'){
+    const fl=S.st==='drown',b=Math.round(Math.sin(t*(fl?6:2)));
+    R2(cx-3,cy-9+b,6,6,'#f4cfa4');R2(cx-3,cy-10+b,6,2,'#2a1a14');R2(cx-4,cy-4+b,8,3,'#ffd24a');
+    if(fl){const a=Math.floor(t*5)%2?0:-3;R2(cx-8,cy-13+a,2,5,'#f4cfa4');R2(cx+6,cy-16-a,2,5,'#f4cfa4');for(let i=0;i<4;i++)R2(cx-7+((i*5+Math.floor(t*8))%14),cy-3-((i*3)%4),1,1,'#fff')}
+    g.globalAlpha=.6;R2(cx-6,cy-2,12,7,'#3fb3d6');g.globalAlpha=1;
+  }else if(S.cstate==='sunk'){for(let i=0;i<3;i++)R2(cx-2+i*2,cy-((t*8+i*5)%14),1,1,'#fff')}
+  else if(S.cstate==='hold'){
+    const b=Math.round(Math.sin(t*2));R2(cx-3,cy-9+b,6,6,'#f4cfa4');R2(cx-3,cy-10+b,6,2,'#2a1a14');R2(cx-4,cy-4+b,8,3,'#ffd24a');
+    gd(cx,cy-2,8,'#e63946',1);gd(cx,cy-2,4,'#3fb3d6',1);R2(cx-8,cy-3,3,2,'#fff');R2(cx+5,cy-3,3,2,'#fff');
+    g.globalAlpha=.6;R2(cx-6,cy+2,12,5,'#3fb3d6');g.globalAlpha=1;
+    if(S.insw){const sx=cx-16,sy=cy+3,a=Math.floor(t*6)%2;R2(sx-3,sy-8,6,6,'#f0c49c');R2(sx-3,sy-9,6,3,'#1a1218');R2(sx+3,sy-6+(a?0:2),6,2,'#f0c49c');g.globalAlpha=.6;R2(sx-5,sy-2,12,6,'#3fb3d6');g.globalAlpha=1}
+  }
+  umb(140,'#e63946');umb(228,'#ffd24a');
+  lounger(118,'#f0d070','#e0b088','#e07a50');lounger(206,'#222','#a8704a','#3a9a9a');
+  if(Math.floor(t*1.2)%2){R2(128,148,2,1,'#fff');R2(131,145,2,1,'#fff')}
+  R2(54,150,16,6,'#8a5a32');R2(56,156,2,8,'#8a5a32');R2(66,156,2,8,'#8a5a32');
+  if(!S.phone){R2(60,145,4,6,'#1a1a22');R2(61,146,2,4,'#7fc8ff')}
+  if(!S.buoy){R2(22,84,3,26,'#8a5a32');gd(23,96,5,'#e63946',1);gd(23,96,2,'#e8d8bc',1);R2(18,95,2,2,'#fff');R2(26,95,2,2,'#fff')}
+  if(!S.pole){R2(120,91,92,1,'#8a6a3a');R2(212,88,9,6,'#b8c4d0');R2(214,90,5,2,'#e8d8bc')}
+  if(S.st==='explore'||S.st==='drown'){if(!S.phone)ar2(62,132,t);if(!S.buoy)ar2(23,74,t);if(!S.pole)ar2(166,76,t)}
+  if(S.cstate==='deck'){R2(278,132,7,6,'#f4cfa4');R2(278,131,7,2,'#2a1a14');R2(285,133,15,5,'#ffd24a');R2(300,135,9,3,'#f4cfa4');if(S.st==='cpr')R2(289,128+Math.round(S.cpush*6),6,3,'#f0c49c')}
+  if(S.fly){const f=S.fly,q=Math.min(1,(S.t-f.t0)/.8),x=Math.round(f.x0+(f.x1-f.x0)*q),y=Math.round(f.y0+(f.y1-f.y0)*q-24*Math.sin(Math.PI*q));gd(x,y,5,'#e63946',1);gd(x,y,2,q<1?'#e8d8bc':'#3fb3d6',1);R2(x-6,y-1,2,2,'#fff')}
+  if(!S.insw)plr(Math.round(S.px),Math.round(S.py),S.dir,S.walk);
+  g.globalAlpha=.06;R2(0,0,320,180,'#ffb060');g.globalAlpha=1;
+  if(S.fade>0){g.globalAlpha=S.fade;R2(0,0,320,180,'#120a14');g.globalAlpha=1}
+}
+function upd2(S,dt){
+  if(S.mode==='talk'){if(S.i<S.txt.length){S.i=Math.min(S.txt.length,S.i+dt*42);say.textContent=S.txt.slice(0,Math.floor(S.i))}dlg.classList.toggle('done',S.i>=S.txt.length)}
+  if(S.cpush>0)S.cpush=Math.max(0,S.cpush-dt*3);
+  if(S.mode==='throw'){S.tp=.5+.5*Math.sin(S.t*3.4);$('miM').style.left='calc('+S.tp*100+'% - 3px)'}
+  if(S.mode==='swim'){S.sw=Math.max(0,S.sw-dt*.22);S.swt-=dt;S.cx=252+30*S.sw;$('miF').style.width=S.sw*100+'%';$('miT').textContent='Bơi kéo bé vào bờ: bấm E liên tục! Còn '+Math.max(0,Math.ceil(S.swt))+' giây';if(S.sw>=1)swimDone(true);else if(S.swt<=0)swimDone(false)}
+  if(S.mode==='cpr')$('cprRing').style.transform='scale('+(1+.3*Math.max(0,Math.sin(S.t*11.5)))+')';
+  if(S.mode==='play'){
+    const dx=S.keys.r-S.keys.l,dy=S.keys.d-S.keys.u,n=Math.hypot(dx,dy)||1;
+    if(dx||dy){if(dx)S.dir=dx;const nx=Math.max(10,Math.min(310,S.px+dx/n*62*dt)),ny=Math.max(84,Math.min(176,S.py+dy/n*46*dt));if(!blk2(nx,S.py))S.px=nx;if(!blk2(S.px,ny))S.py=ny;S.walk+=dt*8}else S.walk=0;
+    if(S.st==='explore'){S.ex+=dt;S.cx=150+102*Math.min(1,S.ex/16);if(S.ex>=16)startDrown()}
+    else if(S.st==='drown'){S.rt-=dt;obj.textContent='Bé đang đuối nước! Cứu bé: còn '+Math.max(0,Math.ceil(S.rt))+' giây';if(S.rt<=0)drownFail()}
+    else if(S.st==='call')obj.textContent=S.phone?'Mục tiêu: bấm nút điện thoại (hoặc phím P) để gọi 115':'Mục tiêu: lấy điện thoại trên bàn (phía trước bên trái) rồi gọi 115';
+    const dC=Math.hypot(S.px-S.cx,S.py-S.cy);
+    S.near=S.st==='drown'&&dC<100?'rescue':(!S.phone&&Math.abs(S.px-62)<26&&S.py>=150)?'phone':(!S.buoy&&Math.hypot(S.px-24,S.py-118)<34)?'buoy':(!S.pole&&Math.abs(S.px-166)<52&&S.py<=98)?'pole':(S.st==='drown'&&!S.shout)?'shout':'';
+    prm.hidden=!S.near;if(S.near)prm.textContent=({rescue:'Nhấn E để cứu bé',phone:'Nhấn E để cầm điện thoại',buoy:'Nhấn E để lấy phao cứu sinh',pole:'Nhấn E để lấy cây vớt lá',shout:'Nhấn E để hét kêu cứu'})[S.near];
+  }
+  pbtn.hidden=!(S.phone&&S.mode==='play');
+}
+function startDrown(){
+  const S=GM;S.st='drown';S.rt=28;S.cstate='water';S.cx=252;S.shout=false;S.mode='idle';prm.hidden=true;
+  talk([{t:'Không có tiếng kêu cứu nào. Đuối nước thường rất lặng lẽ: bé chỉ vùng vẫy yếu ớt trên mặt nước, ở phía đầu hồ sâu.'},{t:'Bố mẹ bé đang quay lưng nói chuyện, nhân viên cứu hộ đang nghỉ giải lao. Phải làm gì đó ngay!'}],()=>{S.mode='play'});
+}
+function act2(){
+  const S=GM;if(S.mode==='throw'){thrHit();return}if(S.mode==='swim'){swimHit();return}if(S.mode==='cpr'){cprHit();return}
+  const k=S.near;if(!k)return;
+  if(k==='phone'){S.phone=true;itemTalk('Bạn cầm điện thoại bỏ vào túi quần.')}
+  else if(k==='buoy'){S.buoy=true;itemTalk('Bạn tháo phao cứu sinh khỏi cột.')}
+  else if(k==='pole'){S.pole=true;itemTalk('Bạn nhặt cây vớt lá bên thành hồ.')}
+  else if(k==='shout'){S.shout=true;S.rt+=8;talk([{t:'Bạn hét thật to: Có người đuối nước! Cứu với! Mọi người quay lại, hai người chạy tới giúp, một người chạy đi gọi nhân viên cứu hộ.'}],()=>{S.mode='play'})}
+  else if(k==='rescue')rescueAsk();
+}
+function rescueAsk(){
+  const S=GM,L=[];
+  if(S.buoy)L.push(['Ném phao cứu sinh cho bé',1,'buoy']);
+  if(S.pole)L.push(['Chìa cây vớt lá cho bé nắm',1,'pole']);
+  L.push(['Nhảy xuống hồ cứu bé ngay',0,'jump']);
+  L.push(['Chưa làm gì, đi tìm dụng cụ trước',2,'wait']);
+  ask('Bé đang vùng vẫy xa bờ. Bạn làm gì?',L,o=>{
+    if(o[2]==='wait'){S.mode='play';return}
+    if(o[2]==='jump')return jumpFail();if(o[2]==='buoy')return throwStart();
+    const d=Math.hypot(S.px-S.cx,S.py-S.cy);
+    if(o[2]==='pole'&&d>64){S.rt=Math.max(0,S.rt-5);talk([{t:'Bé ở quá xa, cây vớt lá không với tới! Bạn mất thêm mấy giây quý giá.'}],()=>{S.mode='play'});return}
+    rescued(o[2]);
+  });
+}
+function rescued(k){
+  const S=GM;S.st='rescued';S.kind=k;obj.textContent='';
+  talk([{t:k==='buoy'?'Bạn ném phao về phía bé. Bé quờ tay ôm chặt lấy phao, bạn kéo bé vào bờ.':'Bạn nằm thấp, chìa cây vớt lá ra. Bé nắm lấy cán, bạn từ từ kéo bé vào bờ.'},{t:'Bạn bế bé lên khỏi mặt nước và đặt xuống nền. Bé nằm im, môi tím tái.'}],()=>{
+    S.cstate='deck';S.px=272;S.py=152;S.dir=1;checkQ(CHK.slice());
+  });
+}
+function checkQ(list){
+  ask('Bé không phản ứng. Bạn làm gì trước tiên?',list,o=>{
+    if(o[1])afterCheck();
+    else{GM.bad++;talk([{t:o[2]}],()=>checkQ(list.filter(x=>x!==o)))}
+  });
+}
+function afterCheck(){
+  const S=GM;
+  talk([{t:'Bạn vỗ vai gọi to nhưng bé không đáp. Bạn nhìn ngực, áp tai sát mũi miệng: bé không thở!'},{t:'Phải gọi 115 ngay rồi hồi sinh tim phổi cho bé!'}],()=>{S.st='call';S.call=true;S.mode='play'});
+}
+function end2(){
+  const S=GM;clearInterval(PHN.tm);PHN.inCall=false;PHN.open=false;$('phone').hidden=true;S.st='cpr';S.px=272;S.py=152;S.dir=1;S.mode='idle';obj.textContent='';
+  talk([{w:'Tổng đài 115',t:'Bật loa ngoài, đặt điện thoại xuống cạnh bé và ép tim theo nhịp, nhanh và đều nhé!'}],startCPR);
+}
+function cprTxt(){$('cprT').textContent='Ép tim: bấm E (hoặc nút ÉP) theo nhịp, '+GM.cn+'/30'}
+function startCPR(){const S=GM;S.mode='cpr';S.cn=0;S.cg=0;S.last=0;$('cprM').innerHTML='&nbsp;';$('cpr').hidden=false;cprTxt()}
+function cprHit(){
+  const S=GM,dt=S.t-S.last;S.last=S.t;S.cn++;let m='';
+  if(S.cn>1){if(dt<.42)m='Quá nhanh!';else if(dt>.65)m='Quá chậm!';else{S.cg++;m='Tốt!'}}
+  $('cprM').textContent=m||'\u00a0';S.cpush=.15;cprTxt();if(S.cn>=30)cprDone();
+}
+function cprDone(){
+  const S=GM;$('cpr').hidden=true;S.mode='idle';
+  if(S.cg>=18)talk([{t:'Bạn ép đủ 30 lần đều tay, rồi hé miệng bé, bịt mũi và thổi ngạt 2 lần, thấy ngực bé phồng lên.'},{t:'Bé ho sặc sụa, nôn ra nước rồi khóc thét lên! Bé đã thở lại.'}],finish2);
+  else{S.bad++;talk([{w:'Tổng đài 115',t:'Nhịp ép chưa đều ('+S.cg+'/29 nhịp đạt). Ép nhanh và đều, 100 đến 120 lần mỗi phút. Làm lại nhé!'}],startCPR)}
+}
+function finish2(){
+  const S=GM;S.mode='idle';obj.textContent='';inv.textContent='';
+  talk([{t:'Nhân viên cứu hộ chạy tới, bố mẹ bé ôm chầm lấy con. Xe cấp cứu 115 tới nơi và đưa bé đi bệnh viện kiểm tra.'}],()=>{
+    S.mode='end';const m=[],n=S.bad+mist;
+    if(n)m.push('Bạn đã chọn sai hoặc làm chưa đúng '+n+' lần.');
+    if(!S.shout)m.push('Chưa hét gọi người xung quanh giúp.');
+    sheetRes('Bé thở lại trước khi xe tới. '+(m.length?m.join(' '):(S.kind==='buoy'?'Bạn ném phao trúng, bơi đẩy bé vào bờ, kiểm tra hơi thở, gọi 115 và ép tim đúng nhịp.':'Bạn cứu bé từ trên bờ bằng cây vớt lá, kiểm tra hơi thở, gọi 115 và ép tim đúng nhịp.')),2);
+  });
+}
+function retry2(){const S=GM;endEl.hidden=true;S.cstate='water';S.st='drown';S.rt=28;S.cx=252;S.px=200;S.py=162;S.dir=1;S.fade=1;S.shout=false;S.mode='play'}
+function drownFail(){
+  const S=GM;S.mode='idle';S.cstate='sunk';obj.textContent='';prm.hidden=true;
+  talk([{t:'Bé chìm xuống, chỉ còn những bọt khí nhỏ nổi lên mặt nước...'},{t:'Nhân viên cứu hộ chạy tới, nhảy xuống vớt bé lên nhưng đã mất những giây quý giá.'}],()=>{S.mode='end';showEnd('Đã quá chậm','Đuối nước diễn ra rất nhanh và lặng lẽ, trẻ nhỏ có thể chìm chỉ sau vài chục giây. Hãy hét kêu cứu ngay và dùng phao hoặc cây vớt lá để cứu từ trên bờ.','Thử lại',retry2)});
+}
+function jumpFail(){
+  const S=GM;S.mode='idle';obj.textContent='';prm.hidden=true;
+  talk([{t:'Bạn lao xuống hồ tay không. Bé hoảng loạn túm chặt lấy bạn, cả hai cùng bị kéo chìm. Nhân viên cứu hộ kịp nhảy xuống vớt cả hai.'}],()=>{S.mode='end';showEnd('Cứu hộ sai cách','Người chưa được huấn luyện nhảy xuống cứu rất dễ bị nạn nhân túm chặt và chìm theo. Hãy cứu từ trên bờ: ném phao, chìa vật dài để bé bám vào, và gọi người giúp.','Thử lại',retry2)});
+}
+function startLevel2(){
+  document.body.classList.add('playing');gm.hidden=false;endEl.hidden=true;$('noti').hidden=true;$('choice').hidden=true;$('ask').hidden=true;$('phone').hidden=true;$('cpr').hidden=true;$('sheet').hidden=true;
+  PHN.open=false;PHN.inCall=false;clearInterval(PHN.tm);endAct=startLevel2;CALL=CALL2;
+  if(document.activeElement)document.activeElement.blur();
+  const S=GM={lv:2,t:0,px:40,py:162,dir:1,walk:0,mode:'idle',fade:1,keys:{l:0,r:0,u:0,d:0},spk:null,txt:'',i:0,st:'explore',ex:0,rt:28,cx:150,cy:124,cstate:'water',phone:false,buoy:false,pole:false,shout:false,bad:0,call:false,cpush:0,near:'',kind:'',cn:0,cg:0,last:0};
+  inv.textContent='';obj.textContent='';
+  talk(INTRO2,()=>{S.mode='play';obj.textContent='Thư giãn quanh hồ bơi (WASD để đi, E để tương tác)';invUp()});
+  l2=performance.now();const id=++LID;
+  requestAnimationFrame(function f(n){if(!GM||id!==LID)return;const dt=Math.min(.05,(n-l2)/1000);l2=n;gupd(dt);grender();requestAnimationFrame(f)});
+}
+$('cprB').addEventListener('pointerdown',e=>{e.preventDefault();if(GM&&GM.mode==='cpr')cprHit()});
+let shK=1;
+const G1=`<div class="sum"><b>Nhớ nhanh:</b> méo mặt, yếu tay, nói ngọng = gọi 115 NGAY và nhớ giờ bắt đầu.</div>
+<div class="step"><h3><i>1</i>Nhận biết nhanh: FAST</h3><div class="fast">
+<b style="background:#ffd24a">F</b><div><strong>Face (Mặt):</strong> nhờ người bệnh cười. Một bên mặt xệ hoặc méo.</div>
+<b style="background:#7fc8ff">A</b><div><strong>Arm (Tay):</strong> nhờ giơ hai tay lên. Một tay yếu hoặc rũ xuống.</div>
+<b style="background:#ff9a9a">S</b><div><strong>Speech (Lời nói):</strong> nói ngọng, khó nói hoặc không hiểu lời.</div>
+<b style="background:#8ce0a0">T</b><div><strong>Time (Thời gian):</strong> chỉ cần có một dấu hiệu, gọi 115 ngay.</div></div></div>
+<div class="step"><h3><i>2</i>Gọi 115, nói gì?</h3><ul>
+<li>Nêu rõ biểu hiện: méo mặt, yếu tay, nói ngọng, nghi đột quỵ.</li>
+<li>Báo giờ bắt đầu. Nếu không biết chính xác, báo giờ lần cuối thấy người bệnh còn bình thường.</li>
+<li>Địa chỉ đầy đủ: số nhà, tên đường, phường, dấu hiệu dễ nhận.</li>
+<li>Cho biết người bệnh còn tỉnh và thở như thế nào. Giữ máy và làm theo hướng dẫn.</li></ul></div>
+<div class="step"><h3><i>3</i>Trong lúc chờ xe</h3>
+<div class="do"><b>NÊN LÀM</b><ul>
+<li>Giữ bình tĩnh, trấn an người bệnh, nới lỏng quần áo.</li>
+<li>Cho ngồi tựa hoặc nằm thoải mái, đầu hơi cao. Nếu bất tỉnh hoặc nôn, cho nằm nghiêng và theo dõi hơi thở.</li>
+<li>Chuẩn bị giấy tờ bệnh án, thẻ bảo hiểm, đơn thuốc đang dùng.</li>
+<li>Cử người ra mở cổng, bật đèn để đón xe cứu thương.</li></ul></div>
+<div class="dont"><b>KHÔNG NÊN</b><ul>
+<li>Cho ăn, uống nước hay uống thuốc (dễ bị sặc).</li>
+<li>Cạo gió, chích máu, bấm huyệt: mất thời gian quý giá.</li>
+<li>Đợi xem có đỡ không rồi mới gọi. Dù triệu chứng tự hết vẫn phải đi viện.</li></ul></div></div>
+<div class="step"><h3><i>4</i>Khi xe tới</h3><ul><li>Báo đúng giờ khởi phát cho nhân viên y tế.</li><li>Đưa giấy tờ, thuốc đang dùng và bệnh nền đã biết.</li></ul></div>
+<div class="note">Cẩm nang mang tính giáo dục, không thay thế khóa huấn luyện sơ cứu chính thức. Khi nghi ngờ đột quỵ, hãy gọi 115 ngay.</div>`;
+const G2=`<div class="sum"><b>Nhớ nhanh:</b> HÉT - NÉM - CHÌA. Không nhảy xuống tay không. Nếu không thở: gọi 115 và ép tim ngay.</div>
+<div class="step"><h3><i>1</i>Nhận biết: đuối nước rất lặng lẽ</h3><ul>
+<li>Thường không kêu hay vẫy tay: đầu ngửa, miệng sát mặt nước, tay đập yếu xuống nước.</li>
+<li>Trẻ nhỏ có thể chìm chỉ sau vài chục giây. Trẻ đang im lặng dưới nước là dấu hiệu đáng lo.</li></ul></div>
+<div class="step"><h3><i>2</i>Đưa bé ra khỏi nước</h3>
+<div class="do"><b>NÊN LÀM</b><ul>
+<li><b>HÉT</b> to gọi người xung quanh và nhân viên cứu hộ.</li>
+<li><b>NÉM</b> phao cứu sinh cho bé ôm chặt.</li>
+<li><b>CHÌA</b> vật dài (cây vớt lá, gậy), nằm thấp để khỏi bị kéo ngã.</li>
+<li>Chỉ xuống nước khi bé đã ôm phao, bạn biết bơi và nên có người hỗ trợ. Hãy đẩy phao vào bờ, đừng để bé túm lấy bạn.</li></ul></div>
+<div class="dont"><b>KHÔNG NÊN</b><ul>
+<li>Nhảy xuống cứu tay không: nạn nhân hoảng loạn có thể túm chặt và kéo bạn chìm theo.</li>
+<li>Rời mắt khỏi bé để đi tìm người, hãy hét để người khác giúp.</li></ul></div></div>
+<div class="step"><h3><i>3</i>Kiểm tra sau khi lên bờ</h3>
+<div class="do"><b>NÊN LÀM</b><ul><li>Đặt nằm ngửa trên nền phẳng, vỗ vai gọi to, nhìn ngực và nghe hơi thở trong tối đa 10 giây.</li></ul></div>
+<div class="dont"><b>KHÔNG NÊN</b><ul><li>Dốc ngược nạn nhân hoặc ấn bụng ép nước ra: mất thời gian, dễ sặc.</li></ul></div></div>
+<div class="step"><h3><i>4</i>Nếu không thở: gọi 115 và ép tim</h3><ul>
+<li>Gọi 115, bật loa ngoài. Nói: địa chỉ đầy đủ, tuổi nạn nhân, có phản ứng và có thở không.</li>
+<li>Ép giữa ngực, sâu khoảng 1/3 bề dày lồng ngực, 100 đến 120 lần mỗi phút, xen 2 lần thổi ngạt.</li>
+<li>Không dừng đến khi bé thở lại hoặc nhân viên y tế tới. Nếu bé nôn, nghiêng đầu, lau miệng rồi tiếp tục.</li></ul></div>
+<div class="step"><h3><i>5</i>Phòng ngừa</h3><ul>
+<li>Luôn trông trẻ trong tầm tay khi ở gần nước, không rời mắt.</li>
+<li>Cho trẻ mặc áo phao, dạy bơi, có hàng rào quanh hồ.</li>
+<li>Biết vị trí phao và dụng cụ cứu hộ, lưu sẵn số 115 trong điện thoại.</li></ul></div>
+<div class="note">Cẩm nang mang tính giáo dục, không thay thế khóa huấn luyện sơ cứu chính thức.</div>`;
+function setTab(k){
+  const r=$('shRes'),tx=r?r.textContent:'',hd=r?r.hidden:true,sb=$('sheet').querySelector('.sb');
+  document.querySelectorAll('.tb').forEach(b=>b.classList.toggle('on',+b.dataset.k===k));
+  sb.innerHTML='<div class="res" id="shRes" hidden></div>'+(k===2?G2:G1);$('shRes').textContent=tx;$('shRes').hidden=hd||k!==shK;sb.scrollTop=0;
+}
+document.querySelectorAll('.tb').forEach(b=>b.addEventListener('click',()=>setTab(+b.dataset.k)));
+function miniShow(m,txt){$('mini').hidden=false;$('miT').textContent=txt;$('miZ').style.display=m==='thr'?'block':'none';$('miM').style.display=m==='thr'?'block':'none';$('miF').style.display=m==='swim'?'block':'none';$('miF').style.width='0';$('miB').textContent=m==='thr'?'NÉM':'BƠI'}
+function throwStart(){const S=GM;S.mode='throw';S.tp=.5;S.kind='buoy';miniShow('thr','Ném phao: bấm E (hoặc nút NÉM) khi vạch trắng nằm trong vùng xanh')}
+function thrHit(){
+  const S=GM;$('mini').hidden=true;S.mode='idle';
+  const dx=S.cx-S.px,dy=S.cy-S.py,d=Math.hypot(dx,dy)||1,L=d*(0.6+0.8*S.tp),x1=S.px+dx/d*L,y1=S.py+dy/d*L,hit=Math.hypot(x1-S.cx,y1-S.cy)<12;
+  S.fly={t0:S.t,x0:S.px,y0:S.py-20,x1,y1,hit};
+  later(950,()=>{
+    S.fly=null;
+    if(hit){S.cstate='hold';talk([{t:'Phao rơi đúng chỗ! Bé quờ tay ôm chặt lấy phao, nhưng đuức sức và không tự bơi vào bờ được.'}],()=>jumpQ())}
+    else{S.rt=Math.max(0,S.rt-4);talk([{t:L<d?'Phao rơi ngắn, chưa tới chỗ bé! Bạn kéo phao về và mất thêm vài giây.':'Phao bay quá xa, vượt qua bé! Bạn kéo phao về và mất thêm vài giây.'}],()=>{S.mode='play'})}
+  });
+}
+const JQ=[['Nhảy xuống, bơi tới đẩy phao có bé vào bờ',1],['Đứng nhìn, chờ bé tự bơi vào bờ',0,'Bé đuức sức, phao đang trôi ra xa. Không thể chờ bé tự bơi vào!'],['Chạy đi gọi bố mẹ bé rồi mới tính',0,'Mỗi giây đều quý. Bố mẹ ở xa và bé có thể buông phao bất cứ lúc nào. Bạn cần hành động ngay!']];
+function jumpQ(list){
+  const L=list||JQ;
+  ask('Bé đã ôm phao nhưng đuức sức, phao không có dây kéo. Bạn làm gì?',L,o=>{
+    if(o[1])talk([{t:'Bạn nhảy xuống hồ, bơi tới chỗ bé. Bé đã có phao nên không túm lấy bạn. Bạn nắm mép phao và bơi đẩy bé vào bờ.'}],startSwim);
+    else{GM.bad++;talk([{t:o[2]}],()=>jumpQ(L.filter(x=>x!==o)))}
+  });
+}
+function startSwim(){const S=GM;S.st='swim';S.insw=true;S.sw=0;S.swt=16;S.mode='swim';miniShow('swim','Bơi kéo bé vào bờ: bấm E liên tục!')}
+function swimHit(){const S=GM;S.sw=Math.min(1,S.sw+.06)}
+function swimDone(ok){
+  const S=GM;$('mini').hidden=true;S.mode='idle';if(!ok)S.bad++;
+  talk([{t:ok?'Bạn đẩy phao có bé tới thành hồ, leo lên rồi bế bé lên bờ.':'Bạn đuức sức. May mà nhân viên cứu hộ chạy tới, cùng bạn đưa bé vào bờ, nhưng đã mất thêm thời gian quý giá.'},{t:'Bé nằm im trên nền, môi tím tái.'}],()=>{S.insw=false;S.cstate='deck';S.st='rescued';S.px=272;S.py=152;S.dir=1;checkQ(CHK.slice())});
+}
+$('miB').addEventListener('pointerdown',e=>{e.preventDefault();if(GM&&GM.mode==='throw')thrHit();else if(GM&&GM.mode==='swim')swimHit()});
+/* ---- Bảng xếp hạng (lưu trên thiết bị) ---- */
+const RK='gh-rank',KN={1:'Đột quỵ',2:'Đuối nước'};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function rankLoad(){try{return JSON.parse(localStorage.getItem(RK))||[]}catch(e){return[]}}
+function rankStore(a){try{localStorage.setItem(RK,JSON.stringify(a.slice(0,100)))}catch(e){}}
+let rkK=0;
+function drawRank(){
+  const a=rankLoad().filter(r=>!rkK||r.k===rkK).sort((x,y)=>y.s-x.s).slice(0,10);
+  $('rlist').innerHTML=a.length?a.map((r,i)=>'<div class="rrow"><i>'+(i+1)+'</i><div>'+esc(r.n)+'<small>'+KN[r.k]+' · '+esc(r.d)+'</small></div><b style="font-weight:400;color:#ffd24a">'+(+r.s||0)+'</b></div>').join(''):'<div class="rempty">Chưa có điểm nào. Hãy chơi một màn để lên bảng!</div>';
+  document.querySelectorAll('.rt').forEach(b=>b.classList.toggle('on',+b.dataset.k===rkK));
+}
+function openRank(k){rkK=k||0;drawRank();$('rank').hidden=false;$('rkX').focus()}
+function calcScore(kind){
+  const S=GM;let s=1000;
+  if(kind===2){s-=120*(S.bad+mist);if(!S.shout)s-=150}
+  else{const W_=S.wait||{};s-=120*((W_.bad||0)+mist);if(!W_.docs)s-=150;if(!W_.care)s-=150}
+  return Math.max(100,s);
+}
+function askSave(kind,score,done){
+  $('svS').textContent=score;let nm='';try{nm=localStorage.getItem('gh-name')||''}catch(e){}
+  $('nm').value=nm;$('save').hidden=false;$('nm').focus();
+  const go=ok=>{
+    if(ok){const n=($('nm').value.trim()||'Ẩn danh').slice(0,14);try{localStorage.setItem('gh-name',n)}catch(e){}
+      const a=rankLoad(),d=new Date();a.push({n,s:score,k:kind===2?2:1,d:String(d.getDate()).padStart(2,'0')+'/'+String(d.getMonth()+1).padStart(2,'0')});rankStore(a.sort((x,y)=>y.s-x.s))}
+    $('save').hidden=true;done();
+  };
+  $('svOk').onclick=()=>go(1);$('svNo').onclick=()=>go(0);$('nm').onkeydown=e=>{if(e.key==='Enter')go(1)};
+}
+document.querySelectorAll('.rt').forEach(b=>b.addEventListener('click',()=>{rkK=+b.dataset.k;drawRank()}));
+$('rkX').addEventListener('click',()=>{$('rank').hidden=true});
+addEventListener('keydown',e=>{if(!$('rank').hidden&&e.key==='Escape')$('rank').hidden=true});
+let endAct=startLevel;
+const later=(ms,fn)=>{const S0=GM;setTimeout(()=>{if(GM===S0)fn()},ms)};
+function showChoice(){GM.mode='choice';obj.textContent='';$('choice').hidden=false;$('cF').focus()}
+function showEnd(h,p,label,fn){endEl.querySelector('h2').textContent=h;endEl.querySelector('p').textContent=p;$('again').textContent=label;endAct=fn;endEl.hidden=false}
+function runFast(){
+  const S=GM;$('choice').hidden=true;S.mode='idle';
+  talk([{w:'Bạn',t:'Mẹ ơi, mẹ cười với con một cái nào.'},{w:'Mẹ',id:'me',t:'Ư... (Mẹ cố mỉm cười)'}],()=>{
+    S.smile=true;obj.textContent='FAST đã kiểm tra: F';
+    talk([{t:'Mặt (Face): khi cười, miệng mẹ chỉ nhếch lên một bên, bên kia xệ xuống.'},{w:'Bạn',t:'Giờ mẹ giơ hai tay lên ngang vai cho con xem nào.'}],()=>{
+      S.smile=false;S.arms=S.t;
+      later(2800,()=>talk([{t:'Tay (Arm): tay trái của mẹ rũ xuống, không giữ được. Một bên tay bị yếu.'},{w:'Bạn',t:'Mẹ nhắc lại theo con: "Hôm nay trời nắng đẹp".'},{w:'Mẹ',id:'me',t:'Hôm... nay... tờ... nắng... đe...'},{t:'Lời nói (Speech): mẹ nói ngọng, đứt quãng, khó phát âm rõ.'},{w:'Bạn',t:'Mặt méo, tay yếu, nói ngọng... Là đột quỵ! Phải gọi 115 ngay, và nhớ giờ bắt đầu là 18:40!'}],()=>{
+        S.arms=0;obj.textContent='FAST đã kiểm tra: F, A, S';
+        startCall()}));
+    });
+  });
+}
+function runSkip(){
+  const S=GM;$('choice').hidden=true;S.mode='idle';
+  talk([{t:'Bạn nghĩ chắc mẹ chỉ mệt thôi. "Mẹ cứ ăn từ từ nhé" - bạn nói rồi gắp thức ăn vào bát cho mẹ.'},{w:'Mẹ',id:'me',t:'Ư... ư...'},{t:'Mười lăm phút trôi qua. Mẹ ngồi lặng im, không nói được nữa...'}],()=>{
+    S.slump=true;
+    talk([{w:'Bé Na',id:'be',t:'Mẹ ơi! Mẹ ơi, mẹ sao thế?!'},{t:'Mẹ gục xuống bàn. Những phút quan trọng nhất đã trôi qua.'}],()=>showEnd('Giờ vàng đã trôi qua','Bỏ qua dấu hiệu khiến cấp cứu bị chậm trễ. Với đột quỵ, càng đến viện sớm cơ hội phục hồi càng cao: ước tính mỗi phút có khoảng 1,9 triệu tế bào não chết đi.','Chọn lại',()=>{S.slump=false;endEl.hidden=true;showChoice()}));
+  });
+}
+$('cF').addEventListener('click',runFast);
+$('cS').addEventListener('click',runSkip);
+$('notiOk').addEventListener('click',closeNoti);
+const PHX=296,inv=$('inv');
+function blk(x,y){return GM.scene==='room'&&x>92&&x<258&&y<154}
+function setInv(){inv.textContent=GM.phone?'Điện thoại: trong túi':'Điện thoại: trên tủ'}
+function gupd(dt){
+  const S=GM;S.t+=dt;if(S.fade>0)S.fade=Math.max(0,S.fade-dt);
+  if(S.lv===2){upd2(S,dt);return}
+  if(S.mode==='scene'&&!S.drop0&&S.t-S.eat0>3.8){S.drop0=S.t;S.droop=true;talk(STROKE,showNoti)}
+  pbtn.hidden=!(S.phone&&S.mode==='play');
+  if(S.wait&&!S.arr&&S.mode==='play'){const W2=S.wait;W2.t-=dt;if(W2.care&&W2.docs&&W2.t>4)W2.t=4;inv.textContent='Xe cứu thương tới sau: '+Math.max(0,Math.ceil(W2.t))+' giây';if(W2.t<=0)arrive()}
+  if(S.gate&&S.mode==='play'){S.gate.t-=dt;inv.textContent='Nhân viên y tế đang chờ ngoài cổng: '+Math.max(0,Math.ceil(S.gate.t))+' giây';if(S.scene==='room'&&S.px<=24)goGate();else if(S.gate.t<=0)gateFail()}
+  if(S.mode==='talk'){if(S.i<S.txt.length){S.i=Math.min(S.txt.length,S.i+dt*42);say.textContent=S.txt.slice(0,Math.floor(S.i))}dlg.classList.toggle('done',S.i>=S.txt.length)}
+  if(S.mode==='play'){
+    const dx=S.keys.r-S.keys.l,dy=S.keys.d-S.keys.u,n=Math.hypot(dx,dy)||1;
+    if(!S.sat&&(dx||dy)){if(dx)S.dir=dx;const nx=Math.max(10,Math.min(S.scene==='yard'&&!S.gated?226:310,S.px+dx/n*60*dt)),ny=Math.max(126,Math.min(176,S.py+dy/n*44*dt));if(!blk(nx,S.py))S.px=nx;if(!blk(S.px,ny))S.py=ny;S.walk+=dt*8}else S.walk=0;
+    const nearP=!S.sat&&!S.phone&&Math.abs(S.px-PHX)<26&&S.py<152,nearS=!S.call&&!S.sat&&Math.abs(S.px-SEAT)<24,stand=S.sat&&S.call;const W_=S.wait&&!S.arr?S.wait:null,nM=W_&&!W_.care&&Math.abs(S.px-178)<34&&S.py>=154,nD=S.scene==='yard'&&!S.gated&&S.px>196,nC=W_&&!W_.docs&&Math.abs(S.px-PHX)<30&&S.py<152;S.near=nM?'care':nD?'door':nC?'docs':'';prm.hidden=!(nearP||nearS||stand||S.near);if(stand)prm.textContent='Nhấn E để rời khỏi ghế';else if(S.near)prm.textContent=({care:'Nhấn E để chăm sóc Mẹ',door:'Nhấn E để mở cổng cho nhân viên y tế',docs:'Nhấn E để lấy giấy tờ bệnh án trong tủ'})[S.near];else if(nearP)prm.textContent='Nhấn E để cầm điện thoại';else if(nearS)prm.textContent='Nhấn E để ngồi vào bàn ăn';
+  }
+}
+function load(){const L=GM.lines[GM.li];GM.txt=L.t;GM.i=0;GM.spk=L.id||null;who.textContent=L.w||'';who.hidden=!L.w;dlg.classList.toggle('narr',!L.w);say.textContent=''}
+function talk(lines,cb){GM.lines=lines;GM.li=0;GM.cb=cb;GM.mode='talk';prm.hidden=true;dlg.hidden=false;load()}
+function next(){GM.li++;if(GM.li>=GM.lines.length){dlg.hidden=true;GM.spk=null;GM.mode='idle';GM.cb()}else load()}
+function act(){
+  const S=GM;
+  if(!$('noti').hidden)closeNoti();else if(document.querySelector('.choice:not([hidden])')){const a=document.activeElement;if(a&&a.closest('.choice'))a.click()}else if(S.mode==='talk'){if(S.i<S.txt.length){S.i=S.txt.length;say.textContent=S.txt}else next()}
+  else if(S.lv===2&&['play','cpr','throw','swim'].includes(S.mode))act2();
+  else if(S.mode==='play'&&S.near)doWait(S.near);
+  else if(S.mode==='play'&&S.sat&&S.call){S.sat=false;S.px=SEAT;S.py=160;S.dir=-1;prm.hidden=true;setObj()}
+  else if(S.mode==='play'&&!S.phone&&Math.abs(S.px-PHX)<26&&S.py<152){S.phone=true;prm.hidden=true;setInv();talk([{t:'Bạn cầm điện thoại trên tủ và bỏ vào túi quần.'}],()=>{S.mode='play';if(S.call)setObj()})}
+  else if(S.mode==='play'&&!S.call&&Math.abs(S.px-SEAT)<24){
+    S.mode='idle';S.sat=true;prm.hidden=true;obj.textContent='';
+    talk(SIT,()=>{S.mode='scene';S.eat0=S.t});
+  }
+}
+function startLevel(){
+  document.body.classList.add('playing');gm.hidden=false;endEl.hidden=true;$('noti').hidden=true;$('choice').hidden=true;endAct=startLevel;CALL=CALL1;$('ask').hidden=true;$('phone').hidden=true;PHN.open=false;PHN.inCall=false;clearInterval(PHN.tm);prm.hidden=true;dlg.hidden=true;
+  if(document.activeElement)document.activeElement.blur();
+  if(!RB){RB=mkc(room);TB=mkc(table)}
+  const S=GM={t:0,px:22,py:150,dir:1,walk:0,mode:'idle',sat:false,phone:false,eat0:null,drop0:0,droop:false,smile:false,slump:false,arms:0,call:false,wait:null,arr:false,gate:null,gated:false,scene:'room',fade:1,keys:{l:0,r:0,u:0,d:0},spk:null,txt:'',i:0};inv.textContent='';
+  obj.textContent='';
+  talk(INTRO,()=>{S.mode='play';setInv();obj.textContent='Mục tiêu: ngồi vào chỗ trống cạnh bé Na (WASD hoặc phím mũi tên để đi, E để tương tác)'});
+  l2=performance.now();const id=++LID;
+  requestAnimationFrame(function f(n){if(!GM||id!==LID)return;const dt=Math.min(.05,(n-l2)/1000);l2=n;gupd(dt);grender();requestAnimationFrame(f)});
+}
+function quit(){clearInterval(PHN.tm);PHN.open=false;PHN.inCall=false;$('phone').hidden=true;$('pbtn').hidden=true;GM=null;gm.hidden=true;document.body.classList.remove('playing');show('lv')}
+addEventListener('keydown',e=>{if(!GM)return;const c=e.code;if(!$('sheet').hidden||!$('save').hidden)return;if(PHN.open){phoneKey(e);return}
+  if(document.querySelector('.choice:not([hidden])')&&/^(Arrow(Up|Down)|Key[WS])$/.test(c)){const b=[...document.querySelectorAll('.choice:not([hidden]) .btn')],i=b.indexOf(document.activeElement);b[(i+(/Up|W/.test(c)?b.length-1:1))%b.length].focus();return}
+  if(c==='ArrowLeft'||c==='KeyA')GM.keys.l=1;else if(c==='ArrowUp'||c==='KeyW')GM.keys.u=1;else if(c==='ArrowDown'||c==='KeyS')GM.keys.d=1;
+  else if(c==='ArrowRight'||c==='KeyD')GM.keys.r=1;
+  else if(c==='KeyE'||c==='Enter'||c==='Space'){e.preventDefault();if(!e.repeat)act()}
+  else if(c==='KeyP'&&GM.phone)openPhone();else if(c==='Escape')quit();
+});
+addEventListener('keyup',e=>{if(!GM)return;const c=e.code;
+  if(c==='ArrowLeft'||c==='KeyA')GM.keys.l=0;if(c==='ArrowUp'||c==='KeyW')GM.keys.u=0;if(c==='ArrowDown'||c==='KeyS')GM.keys.d=0;
+  if(c==='ArrowRight'||c==='KeyD')GM.keys.r=0;
+  if(c==='Enter'||c==='Space')e.preventDefault();
+});
+[['bl','l'],['br','r'],['bu','u'],['bd','d']].forEach(([id,k])=>{const b=$(id);
+  b.addEventListener('pointerdown',e=>{e.preventDefault();if(GM)GM.keys[k]=1});
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,()=>{if(GM)GM.keys[k]=0}));
+});
+$('bact').addEventListener('click',()=>{if(GM)act()});
+dlg.addEventListener('click',()=>{if(GM)act()});
+gc.addEventListener('click',()=>{if(GM&&GM.mode==='talk')act()});
+$('quit').addEventListener('click',quit);
+$('menu').addEventListener('click',quit);
+$('again').addEventListener('click',()=>endAct());
+</script>
+</body>
+</html>
